@@ -67,13 +67,13 @@ class Ls331():
         print ('Successful change. Heater state {}'.format(heater_state))
     
     def set_control_loop(self,loop=1,inp='a',unit=1,pwup=0, cpwr=1):
-        # Fija con que temómetro se toma la referencia de temperatura.
+        # Fija con que temómetro se fija la temperatura.
         # Por default en este equipo se controla con el termómetro A.
         self.contemp.write('CSET {}, {}, {}, {}'.format(str(loop),inp,str(unit),str(pwup),str(cpwr)))
 
     def change_temp(self,temp,rate,heat):
         # Cambio el setpoint y el rate para iniciar una rampa de temperatura.
-        self.set_ramp(1) #Apago la rampa, dado que el default es cero 
+        self.set_ramp(1)
         time.sleep(0.1)
         temp_ini = []
         temp_ini = self.get_temp()
