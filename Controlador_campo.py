@@ -2,7 +2,7 @@
 """
 Created on Fri May 17 10:25:39 2019
 
-@author: Admin
+@author: Agustin Lopez Pedroso
 """
 import PyDAQmx
 from PyDAQmx import Task
@@ -24,6 +24,7 @@ class FieldControl():
         #de output para controlar la corriente del electroimán
         self.task = Task()
         self.task.CreateAOVoltageChan("Dev1/ao0","",-10.0,10.0,PyDAQmx.DAQmx_Val_Volts,None)
+        self.vi = 0
     
     def set_voltage(self,voltage):
         # Inicio un task para establecer el valor de voltaje de salida en volts
@@ -31,27 +32,28 @@ class FieldControl():
         self.task.WriteAnalogScalarF64(1,10.0,voltage,None)
         self.task.StopTask()
     
-    def set_volatge_steps(self,vf,vi,step=0.1):
+    def set_voltage_steps(self,vf,step=0.01):
         # Cambia el voltaje en pasos pequeños, es necesario poner el valor de voltaje
         #deseado vf y el voltaje inicial vi(mejorar para que lo tome solo)
-        vaux = vi
-        if vf > vi:
+        vaux = self.vi
+        if vf > self.vi:
             while vaux < vf:
                 self.task.StartTask()
                 self.task.WriteAnalogScalarF64(1,10.0,vaux,None)
                 self.task.StopTask()
                 vaux = vaux + step
-                time.sleep(2)
+                time.sleep(0.5)
         else:
             while vaux > vf:
                 self.task.StartTask()
                 self.task.WriteAnalogScalarF64(1,10.0,vaux,None)
                 self.task.StopTask()
                 vaux = vaux - step
-                time.sleep(2)
+                time.sleep(0.5)
         self.task.StartTask()
         self.task.WriteAnalogScalarF64(1,10.0,vf,None)
         self.task.StopTask()
-        print('Succes')
+        self.vi = vf
+#        print('Succes')
         
         
