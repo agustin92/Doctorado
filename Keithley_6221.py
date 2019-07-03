@@ -24,16 +24,29 @@ class K6221():
         print(self.cs.query('*IDN?'))
         
     def delta_mode(self,current,delay =0.1, count = 'inf'):
-        self.cs.write('SOUR:DELT:HIGH {}'.format(str(current)))
-        self.cs.write('SOUR:DELT:DELAY {}'.format(str(delay)))
-        self.cs.write('SOUR:DELT:COUN {}'.format(str(count)))
-        self.cs.write('SOUR:DELT:CAB on')
-        self.cs.write('SOUR:DELT:ARM')
-        self.cs.write('INIT:IMM')
+        if not self.ask_delta_mode():
+            self.cs.write('SOUR:DELT:HIGH {}'.format(str(current)))
+            self.cs.write('SOUR:DELT:DELAY {}'.format(str(delay)))
+            self.cs.write('SOUR:DELT:COUN {}'.format(str(count)))
+            self.cs.write('SOUR:DELT:CAB on')
+
+            self.cs.write('SOUR:DELT:ARM')
+            time.sleep(5)
+            while not self.ask_delta_mode():
+                self.cs.write('SOUR:DELT:ARM')
+                time.sleep(1)
+            self.cs.write('INIT:IMM')
+    
+    def ask_delta_mode(self):
+        return int(self.cs.query('SOUR:DELT:ARM?'))
     
     def reset(self):
         self.cs.write('*RST')
         self.cs.write('UNIT OHMS')
+        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
+        self.cs.write("SYST:COMM:SER:SEND \'VOLT:NPLC 5\' ")
+
+
     
     def stop_meas(self):
         self.cs.write('SOUR:SWE:ABOR')
