@@ -23,9 +23,11 @@ def r_t(current,samples,temperatura_final,rate,heater,tiempo_med=10,save=False,n
     temperatura_b=[]
     resistencia=[]
     tiempo=[]
-    res.reset()
+    time.sleep(2)
     res.delta_mode(current)
+    time.sleep(2)
     temp.change_temp(temperatura_final,rate,heater)
+    time.sleep(2)
     ti = time.time()
     line1=[]
     line2=[]
