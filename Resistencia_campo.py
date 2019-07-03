@@ -106,7 +106,7 @@ def change_field_r_plt(vinicial,vfinal,samples,step,line1,resistencia_prev,
     return resistencia_prev, voltaje_prev, line1, campo_prev
 
 
-def r_h(current,samples,cmax,cmin,step,calibration,slope,intercept,save,name):
+def r_h(current,samples,cmax,cmin,step,calibration= False,slope = 0,intercept=0,save = False,name = ''):
 #    campo.set_voltage_steps(-4)
 #    campo.set_voltage_steps(0)
     resistencia = []
