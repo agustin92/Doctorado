@@ -6,6 +6,7 @@ Created on Wed Jun 26 17:27:40 2019
 """
 
 import Keithley_6221 as kd
+import Controlador_campo as cc
 #import statistics as st
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,22 +19,25 @@ plt.style.use('ggplot')
 
 
 res = kd.K6221()
+campo = cc.FieldControl()
 
-def resistencia_i(current,samples,number,save= False,name=''):
+
+
+
+def resistencia_i(current_mA,samples,number,time_sleep=0.5,save= False,name=''):
     resistencia=[]
     iteracion = []
     line1= []
-    contador=0
     res.reset()
     time.sleep(2)
+    current = current_mA/1000
     res.delta_mode(current)
     for i in range(number):
         resistencia.append(res.mean_meas(samples))
-        iteracion.append(contador)
+        iteracion.append(i)
         line1 = live_plotter_xy(iteracion,resistencia,line1)
-        contador = contador +1
 #        print(contador)
-        time.sleep(0.5)
+        time.sleep(time_sleep)
     res.stop_meas()
     if save:
         f = open("{}".format(name),"w")
@@ -53,6 +57,7 @@ def live_plotter_xy(x_vec,y1_data,line1,identifier='',pause_time=0.01):
         plt.ylabel('Resistencia (OHM)')
         plt.xlabel('Numero de iteracion')
         plt.title('Title: {}'.format(identifier))
+        plt.ticklabel_format(useOffset=False)
         plt.show()
         
     line1.set_data(x_vec,y1_data)
