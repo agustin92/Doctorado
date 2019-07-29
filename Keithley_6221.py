@@ -37,14 +37,20 @@ class K6221():
                 time.sleep(1)
             self.cs.write('INIT:IMM')
     
+    def change_current(self,current):
+        self.cs.write('SOUR:DELT:HIGH {}'.format(str(current)))
+    
     def ask_delta_mode(self):
         return int(self.cs.query('SOUR:DELT:ARM?'))
     
-    def reset(self):
+    def reset(self,rang = 0.1,unit='OHMS'):
         self.cs.write('*RST')
-        self.cs.write('UNIT OHMS')
-        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
+        self.cs.write('UNIT {}'.format(unit))
+#        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
+        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG {}\' ".format(str(rang)))
         self.cs.write("SYST:COMM:SER:SEND \'VOLT:NPLC 5\' ")
+#        self.cs.write('CURRent:RANGe:AUTO ON')
+        self.cs.write('CURRent:COMP 100')
 
 
     
@@ -52,7 +58,7 @@ class K6221():
         self.cs.write('SOUR:SWE:ABOR')
     
     def measure(self):
-        return self.cs.query_ascii_values('SENS:DATA:LATEST?')[0]
+        return self.cs.query_ascii_values('SENS:DATA:FRESh?')[0]
     
     def mean_meas(self,samples):
         raux=[]
