@@ -49,6 +49,9 @@ def resistencia_i(current_mA,samples,number,time_sleep=0.5,save= False,name=''):
     return iteracion, resistencia
 
 def live_plotter_xy(x_vec,y1_data,line1,identifier='',pause_time=0.01):
+#    lim = 2
+#    x_vec = x_vec[lim:]
+#    y1_data = y1_data[lim:]
     if line1==[]:
         plt.ion()
         fig = plt.figure(figsize=(8,4))
