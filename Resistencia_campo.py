@@ -23,9 +23,9 @@ plt.style.use('ggplot')
 res = kd.K6221()
 campo = cc.FieldControl()
 
-current = 0   #Definir la corriente en A
-campo_max = 2 #Definir campo maximo
-campo_min = -2 #Definir campo minimo
+#current = 0   #Definir la corriente en A
+#campo_max = 2 #Definir campo maximo
+#campo_min = -2 #Definir campo minimo
 
 def change_field_r(vinicial,vfinal,samples,step):
     vaux = vinicial
@@ -107,7 +107,7 @@ def change_field_r_plt(vinicial,vfinal,samples,step,line1,resistencia_prev,
 
 
 def r_h(current,samples,cmax,cmin,step,calibration= False,slope = 0,intercept=0,save = False,name = ''):
-#    campo.set_voltage_steps(-4)
+#    campo.set_voltage_steps(-1)
 #    campo.set_voltage_steps(0)
     resistencia = []
     voltaje=[]
@@ -116,23 +116,27 @@ def r_h(current,samples,cmax,cmin,step,calibration= False,slope = 0,intercept=0,
     res.reset()
     time.sleep(2)
     res.delta_mode(current)
-    aux =change_field_r_plt(0,cmax,samples,step,line1_aux,resistencia,field,voltaje,calibration,slope,intercept)
-#    resistencia.extend(aux[0])
-#    voltaje.extend(aux[1])
-#    line1_aux =aux[2]
-#    if calibration:
-#        field.extend(aux[3])
-    aux =change_field_r_plt(cmax,cmin,samples,step,aux[2],aux[0],aux[3],aux[1],calibration,slope,intercept)
-#    resistencia.extend(aux[0])
-#    voltaje.extend(aux[1])
-#    line1_aux = aux[2]
-#    if calibration:
-#        field.extend(aux[3])
-    aux =change_field_r_plt(cmin,0,samples,step,aux[2],aux[0],aux[3],aux[1],calibration,slope,intercept)
-    resistencia=aux[0]
-    voltaje = aux[1]
-    if calibration:
-        field = aux[3]
+    try:
+        aux =change_field_r_plt(0,cmax,samples,step,line1_aux,resistencia,field,voltaje,calibration,slope,intercept)
+    #    resistencia.extend(aux[0])
+    #    voltaje.extend(aux[1])
+    #    line1_aux =aux[2]
+    #    if calibration:
+    #        field.extend(aux[3])
+        aux =change_field_r_plt(cmax,cmin,samples,step,aux[2],aux[0],aux[3],aux[1],calibration,slope,intercept)
+    #    resistencia.extend(aux[0])
+    #    voltaje.extend(aux[1])
+    #    line1_aux = aux[2]
+    #    if calibration:
+    #        field.extend(aux[3])
+        aux =change_field_r_plt(cmin,0,samples,step,aux[2],aux[0],aux[3],aux[1],calibration,slope,intercept)
+        resistencia=aux[0]
+        voltaje = aux[1]
+        if calibration:
+            field = aux[3]
+        
+    except KeyboardInterrupt:
+        pass
     res.stop_meas()
     if save:
         f = open("{}".format(name),"w")
@@ -164,6 +168,7 @@ def live_plotter_xy(x_vec,y1_data,line1,calibration,identifier='',pause_time=0.0
             plt.ylabel('Resistencia (OHM)')
             plt.xlabel('Voltaje(V)')
         plt.title('Title: {}'.format(identifier))
+        plt.ticklabel_format(useOffset=False)
         plt.show()
         
     line1.set_data(x_vec,y1_data)
