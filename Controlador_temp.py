@@ -90,7 +90,7 @@ class Ls331():
     def get_temp(self):
         # Mide la temperatura en ambos termómetros
         temp_a = float(self.contemp.query('KRDG? A'))
-        time.sleep(0.1)
+        time.sleep(0.5)
         temp_b = float(self.contemp.query('KRDG? B'))
         return temp_a, temp_b
     
