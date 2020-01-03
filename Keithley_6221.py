@@ -31,10 +31,16 @@ class K6221():
             self.cs.write('SOUR:DELT:CAB on')
 
             self.cs.write('SOUR:DELT:ARM')
-            time.sleep(5)
+            tiempo_aux_ini = time.time()
+            tiempo_aux = tiempo_aux_ini
+            while (tiempo_aux - tiempo_aux_ini) < 5:
+                tiempo_aux = time.time()
             while not self.ask_delta_mode():
                 self.cs.write('SOUR:DELT:ARM')
-                time.sleep(1)
+                tiempo_aux_ini = time.time()
+                tiempo_aux = tiempo_aux_ini
+                while (tiempo_aux - tiempo_aux_ini) < 1:
+                    tiempo_aux = time.time()
             self.cs.write('INIT:IMM')
     
     def change_current(self,current):
@@ -64,6 +70,6 @@ class K6221():
         raux=[]
         for i in range(samples):
             raux.append(self.measure())
-            time.sleep(0.2)
-        return st.mean(raux)
+#            time.sleep(0.2)
+        return np.mean(np.array(raux))
             

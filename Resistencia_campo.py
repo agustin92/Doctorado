@@ -118,17 +118,7 @@ def r_h(current,samples,cmax,cmin,step,calibration= False,slope = 0,intercept=0,
     res.delta_mode(current)
     try:
         aux =change_field_r_plt(0,cmax,samples,step,line1_aux,resistencia,field,voltaje,calibration,slope,intercept)
-    #    resistencia.extend(aux[0])
-    #    voltaje.extend(aux[1])
-    #    line1_aux =aux[2]
-    #    if calibration:
-    #        field.extend(aux[3])
         aux =change_field_r_plt(cmax,cmin,samples,step,aux[2],aux[0],aux[3],aux[1],calibration,slope,intercept)
-    #    resistencia.extend(aux[0])
-    #    voltaje.extend(aux[1])
-    #    line1_aux = aux[2]
-    #    if calibration:
-    #        field.extend(aux[3])
         aux =change_field_r_plt(cmin,0,samples,step,aux[2],aux[0],aux[3],aux[1],calibration,slope,intercept)
         resistencia=aux[0]
         voltaje = aux[1]

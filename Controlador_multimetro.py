@@ -8,7 +8,7 @@ Created on Fri Jul 19 09:20:52 2019
 import visa
 import numpy as np
 import time
-import statistics as st
+#import statistics as st
 
 rm = visa.ResourceManager()
 
@@ -31,12 +31,12 @@ class K2010():
         self.mult.write('SENS:RES:RANG:AUTO ON')
         self.mult.write('SENS:RES:NPLC {}'.format(nplc))
 #        self.mult.write('CONF:{}'.format(str(modo)))
+    
     def mode_4wire(self,nplc='5'):
         self.mult.write('SENS:FUNC \'FRES\'')
         self.mult.write('SENS:FRES:RANG:AUTO ON')
         self.mult.write('SENS:FRES:NPLC {}'.format(nplc))
         
-    
     def ask_modo(self):
         return self.mult.query('CONF?')
     
@@ -45,7 +45,6 @@ class K2010():
     
     def measure(self):
         return self.mult.query_ascii_values('SENS:DATA:FRESH?')[0]
-    
     
     def continuous_mode(self,on=False):
         if on:
@@ -57,7 +56,7 @@ class K2010():
         raux=[]
         for i in range(samples):
             raux.append(self.measure())
-            time.sleep(0.2)
-        return st.mean(raux)
+#            time.sleep(0.2)
+        return np.mean(np.array(raux))
             
         

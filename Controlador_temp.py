@@ -74,23 +74,23 @@ class Ls331():
     def change_temp(self,temp,rate,heat):
         # Cambio el setpoint y el rate para iniciar una rampa de temperatura.
         self.set_ramp(1)
-        time.sleep(0.1)
+#        time.sleep(0.1)
         temp_ini = []
         temp_ini = self.get_temp()
-        time.sleep(0.1)
+#        time.sleep(0.1)
         self.setpoint(temp_ini[0])
-        time.sleep(0.1)
+#        time.sleep(0.1)
         self.set_ramp(rate, out=1)
-        time.sleep(0.1)
+#        time.sleep(0.1)
         self.setpoint(temp)
-        time.sleep(0.1)
+#        time.sleep(0.1)
         self.set_range(heat)
         
         
     def get_temp(self):
         # Mide la temperatura en ambos termómetros
         temp_a = float(self.contemp.query('KRDG? A'))
-        time.sleep(0.5)
+#        time.sleep(0.5)
         temp_b = float(self.contemp.query('KRDG? B'))
         return temp_a, temp_b
     
