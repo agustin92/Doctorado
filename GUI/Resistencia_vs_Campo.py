@@ -221,9 +221,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.voltage.append(data[0])
         self.field.append(data[2])
         
-        self.ui.lineEdit_10.setText(self._translate("MainWindow", "{}".format(data[1])))
-        self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(data[0])))
-        self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(data[2])))
+        self.ui.lineEdit_10.setText(self._translate("MainWindow", "{}".format(self.resistance[-1])))
+        self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(self.voltage[-1])))
+        self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(self.field[-1])))
         
         if self.param['calibration']:
             self.curve.setData(self.field,self.resistance)
@@ -262,7 +262,7 @@ class mywindow(QtWidgets.QMainWindow):
                       'slope' : float(self.ui.lineEdit_6.text()),
                       'intercept' : float(self.ui.lineEdit_7.text()),
                       'save' : self.save,
-                      'name' : self.ui.lineEdit_7.text()
+                      'name' : str(self.ui.lineEdit_8.text())
                      }        
         
 
@@ -272,8 +272,7 @@ class mywindow(QtWidgets.QMainWindow):
             tiempo_aux = time.time()
         
         if self.param['save']:
-            
-            self.f = open(''.format(self.param['name']),'w')
+            self.f = open('{}'.format(self.param['name']),'w')
             
             if self.param['calibration']:
                 self.f.write('Campo(G),Resistencia(Ohm)\n')
