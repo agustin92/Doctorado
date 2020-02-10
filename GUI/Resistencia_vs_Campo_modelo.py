@@ -4,9 +4,6 @@ Created on Fri Jan 31 15:01:02 2020
 
 @author: Agustin Lopez Pedroso
 agustin.lopezpedroso@gmail.com
-
-Para funcionar deben estar conectados y encendidos el amplificador de corriente, 
-fuente de corriente y nanovoltimetro
 """
 
 from PyQt5 import QtWidgets, Qt, QtCore
@@ -15,8 +12,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import numpy as np
 import time 
-#import Controlador_campo as cc
-#import Keithley_6221 as kd
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -26,7 +21,10 @@ from Resistencia_vs_Campo_GUI import Ui_MainWindow
 import sys
  
 ###
-#Pendientes
+#Pendientes: Poner result emit donde corresponda, revisar si debo pasar los resultados en cada emit
+# revisar toda la estructura del codigo para adaptarlo a la nueva clase
+# Poner que el stop detenga la medicion y lleve el campo a cero, no es necesario que deje de correr
+#la parte gráfica, poner que guarde ahí si es que no lo hace antes. Con un flag en el while es suficiente
 ###
 
 class WorkerSignals(QObject):
@@ -58,13 +56,11 @@ class Worker(QRunnable):
         self.signals = WorkerSignals()
         self.results_inst = [0.0,0.0,0.0]
         self.running = True
-        self.res = kd.K6221()
-        self.campo = cc.FieldControl()
 
         # Add the callback to our kwargs
     
-    def measure(self):
-        resistance = self.res.mean_meas(self.parameters['samples'])
+    def measure(self, voltage):
+        resistance = np.random.randn()
         return resistance
     
     def stop(self):
@@ -78,29 +74,21 @@ class Worker(QRunnable):
         results_inst[2] = Campo
         '''
         
-        self.res.reset()
-        time.sleep(2)
-        self.res.delta_mode(self.parameters['current_mA']/1000.0)
-        time.sleep(1)
-        
-        
         try:
             while self.results_inst[0] < self.parameters['cmax'] and self.running:
-                self.campo.set_voltage_steps(self.results_inst[0])
-                time.sleep(2)
-                self.results_inst[1] = self.measure()
+                print('mido')
+                self.results_inst[1] = self.measure(self.results_inst[0])
                 if self.parameters['calibration']:
                     self.results_inst[2] = self.parameters['slope']*self.results_inst[0]+ self.parameters['intercept']
                 result = self.results_inst
                 self.signals.result.emit(result)
                 time.sleep(0.1)
                 self.results_inst[0] += self.parameters['step']
+                time.sleep(2)
             
             if self.running:
                 self.results_inst[0] = self.parameters['cmax']
-                self.campo.set_voltage_steps(self.results_inst[0])
-                time.sleep(2)
-                self.results_inst[1] = self.measure()
+                self.results_inst[1] = self.measure(self.results_inst[0])
                 if self.parameters['calibration']:
                     self.results_inst[2] = self.parameters['slope']*self.results_inst[0]+ self.parameters['intercept']
                 result = self.results_inst
@@ -108,21 +96,19 @@ class Worker(QRunnable):
                 time.sleep(0.1)
 
             while self.results_inst[0] > self.parameters['cmin'] and self.running:
-                self.campo.set_voltage_steps(self.results_inst[0])
-                time.sleep(2)
-                self.results_inst[1] = self.measure()
+                print('mido')
+                self.results_inst[1] = self.measure(self.results_inst[0])
                 if self.parameters['calibration']:
                     self.results_inst[2] = self.parameters['slope']*self.results_inst[0]+ self.parameters['intercept']
                 result = self.results_inst
                 self.signals.result.emit(result)
                 time.sleep(0.1)
                 self.results_inst[0] += -1.0*self.parameters['step']
+                time.sleep(2)                        
 
             if self.running:
                 self.results_inst[0] = self.parameters['cmin']
-                self.campo.set_voltage_steps(self.results_inst[0])
-                time.sleep(2)
-                self.results_inst[1] = self.measure()
+                self.results_inst[1] = self.measure(self.results_inst[0])
                 if self.parameters['calibration']:
                     self.results_inst[2] = self.parameters['slope']*self.results_inst[0]+ self.parameters['intercept']
                 result = self.results_inst
@@ -130,9 +116,8 @@ class Worker(QRunnable):
                 time.sleep(0.1)
 
             while self.results_inst[0] < 0.0 and self.running:
-                self.campo.set_voltage_steps(self.results_inst[0])
-                time.sleep(2)
-                self.results_inst[1] = self.measure()
+                print('mido')
+                self.results_inst[1] = self.measure(self.results_inst[0])
                 if self.parameters['calibration']:
                     self.results_inst[2] = self.parameters['slope']*self.results_inst[0]+ self.parameters['intercept']
                 result = self.results_inst
@@ -143,22 +128,14 @@ class Worker(QRunnable):
                      
             if self.running:
                 self.results_inst[0] = 0.0
-                self.campo.set_voltage_steps(self.results_inst[0])
-                time.sleep(2)                
-                self.results_inst[1] = self.measure()
+                self.results_inst[1] = self.measure(self.results_inst[0])
                 if self.parameters['calibration']:
                     self.results_inst[2] = self.parameters['slope']*self.results_inst[0]+ self.parameters['intercept']
                 result = self.results_inst
                 self.signals.result.emit(result)
                 time.sleep(0.1)
                 
-                self.res.stop_meas()
-                
-                
             if not self.running:
-                self.res.stop_meas()
-                self.campo.set_voltage_steps(0.0)
-                time.sleep(5)
                 print('pare la medicion')
             
         except not self.running:
@@ -192,23 +169,13 @@ class mywindow(QtWidgets.QMainWindow):
 #        self.running = False
         self.ui.pushButton_2.pressed.connect(self.stop)
         
-        self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
-        self.path = ''
-        
         self.voltage = []
         self.resistance = []
         self.field = []
         
         self.show()
         self.threadpool = QThreadPool()
-        self._translate = QtCore.QCoreApplication.translate
         
-        
-    def open_dialog_box(self):
-        file = ''
-        file = QFileDialog.getExistingDirectory()
-        self.path = file
-    
     def calibration_check(self,status):
         
         if status == QtCore.Qt.Checked:
@@ -230,32 +197,15 @@ class mywindow(QtWidgets.QMainWindow):
         self.voltage.append(data[0])
         self.field.append(data[2])
         
-        self.ui.lineEdit_10.setText(self._translate("MainWindow", "{}".format(str(self.resistance[-1]))))
-        self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(str(self.voltage[-1]))))
-        self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(str(self.field[-1]))))
-        
         if self.param['calibration']:
             self.curve.setData(self.field,self.resistance)
-            if self.param['save']:
-                self.f.write('{},{}\n'.format(data[2],data[1]))
         else:
             self.curve.setData(self.voltage,self.resistance)
-            if self.param['save']:
-                self.f.write('{},{}\n'.format(data[0],data[1]))            
 
         
     def stop(self):
         self.worker.stop()
         print('Pare el thread')
-        if self.param['save']:
-            self.f.close()
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "User stop"))
-        
-    def end(self):
-        if self.param['save']:
-            self.f.close()
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Finished"))
-        print('Medicion finalizada')
         
         
     def start(self):
@@ -271,7 +221,7 @@ class mywindow(QtWidgets.QMainWindow):
                       'slope' : float(self.ui.lineEdit_6.text()),
                       'intercept' : float(self.ui.lineEdit_7.text()),
                       'save' : self.save,
-                      'name' : str(self.ui.lineEdit_8.text())
+                      'name' : self.ui.lineEdit_7.text()
                      }        
         
 
@@ -279,21 +229,11 @@ class mywindow(QtWidgets.QMainWindow):
         tiempo_aux = tiempo_aux_ini
         while (tiempo_aux - tiempo_aux_ini) < 2:
             tiempo_aux = time.time()
+
         
-        if self.param['save']:
-            self.f = open(self.path + '/{}'.format(self.param['name']),'w')
-            
-            if self.param['calibration']:
-                self.f.write('Campo(G),Resistencia(Ohm)\n')
-            else:
-                self.f.write('Voltaje(V),Resistencia(Ohm)\n')
-                
-                
         self.worker = Worker(self.param)
         self.worker.signals.result.connect(self.update)
-        self.worker.signals.finished.connect(self.end)
         self.threadpool.start(self.worker) 
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Running"))
 
             
 #        self.ui.pushButton.clicked.connect(self.btnClicked) # connecting the clicked signal with btnClicked slot
@@ -302,7 +242,12 @@ class mywindow(QtWidgets.QMainWindow):
 # 
 #        self.ui.label.setText("Button Clicked")
  
- 
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    application = mywindow()
+    application.show()
+    sys.exit(app.exec_()) 
+    
 #app = QtWidgets.QApplication([])
 # 
 #application = mywindow()
@@ -310,9 +255,3 @@ class mywindow(QtWidgets.QMainWindow):
 #application.show()
 #app.exec_()
 #sys.exit(app.exec())
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    application = mywindow()
-    application.show()
-    sys.exit(app.exec_())
-    
