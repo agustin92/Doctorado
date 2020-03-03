@@ -8,7 +8,7 @@ Created on Wed May 15 16:07:07 2019
 import visa
 import numpy as np
 import time
-import statistics as st
+#import statistics as st
 
 rm = visa.ResourceManager()
 
@@ -52,10 +52,10 @@ class K6221():
     def reset(self,rang = 0.1,unit='OHMS'):
         self.cs.write('*RST')
         self.cs.write('UNIT {}'.format(unit))
-#        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
-        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG {}\' ".format(str(rang)))
+        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
+#        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG {}\' ".format(str(rang)))
         self.cs.write("SYST:COMM:SER:SEND \'VOLT:NPLC 5\' ")
-#        self.cs.write('CURRent:RANGe:AUTO ON')
+        self.cs.write('CURRent:RANGe:AUTO ON')
         self.cs.write('CURRent:COMP 100')
 
 
@@ -70,6 +70,9 @@ class K6221():
         raux=[]
         for i in range(samples):
             raux.append(self.measure())
-#            time.sleep(0.2)
+            tiempo_aux_ini = time.time()
+            tiempo_aux = tiempo_aux_ini
+            while (tiempo_aux - tiempo_aux_ini) < 0.2:
+                tiempo_aux = time.time()
         return np.mean(np.array(raux))
             

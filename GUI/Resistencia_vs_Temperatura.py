@@ -13,8 +13,8 @@ from PyQt5.QtCore import *
 import numpy as np
 import time 
 #import Controlador_campo as cc
-#import Keithley_6221 as kd
-#import Controlador_temp as te
+import Keithley_6221 as kd
+import Controlador_temp as te
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -92,7 +92,7 @@ class Worker(QRunnable):
         ti = time.time()
         
         try:
-            while True:
+            while True and self.running:
                 time_aux = time.time() - ti             
                 self.results_inst[:3] = self.measure()
                 self.results_inst[3] = time_aux
@@ -108,6 +108,12 @@ class Worker(QRunnable):
 #                self.campo.set_voltage_steps(0.0)
 #                time.sleep(5)
 #                print('pare la medicion')
+            
+            if not self.running:
+                self.res.stop_meas()
+                self.temp.set_range()
+                print('pare la medicion')
+                pass    
             
         except not self.running:
             self.res.stop_meas()
@@ -136,7 +142,7 @@ class mywindow(QtWidgets.QMainWindow):
         
         self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
         self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
-        self.ui.graphWidget.setLabel('bottom', "Temperature_B", units='K')
+        self.ui.graphWidget.setLabel('bottom', "Temperature_A", units='K')
         
         self.curve2 = self.ui.graphWidget_2.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
         self.ui.graphWidget_2.setLabel('left', "Temperature_A", units='K')
@@ -189,9 +195,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_13.setText(self._translate("MainWindow", "{}".format(str(self.temperature_b[-1]))))
         
 
-        self.curve.setData(self.temperature_b,self.resistance)
-        self.curve2.setDate(self.time,self.temperature_a)
-        self.curve3.setDate(self.time,self.temperature_b)
+        self.curve.setData(self.temperature_a,self.resistance)
+        self.curve2.setData(self.time,self.temperature_a)
+        self.curve3.setData(self.time,self.temperature_b)
         if self.param['save']:
             self.f.write('{},{},{},{}\n'.format(self.time[-1],self.temperature_a[-1],
                                                 self.temperature_b[-1],self.resistance[-1]))
@@ -261,11 +267,11 @@ class mywindow(QtWidgets.QMainWindow):
                 self.f.write('Time(s),Temperature_a(K),Temperature_b(K),Resistance(Ohm)\n')
                 
                     
-#            self.worker = Worker(self.param)
-#            self.worker.signals.result.connect(self.update)
-#            self.worker.signals.finished.connect(self.end)
-#            self.threadpool.start(self.worker) 
-#            self.ui.lineEdit_14.setText(self._translate("MainWindow", "Running"))
+            self.worker = Worker(self.param)
+            self.worker.signals.result.connect(self.update)
+            self.worker.signals.finished.connect(self.end)
+            self.threadpool.start(self.worker) 
+            self.ui.lineEdit_14.setText(self._translate("MainWindow", "Running"))
 
             
 #        self.ui.pushButton.clicked.connect(self.btnClicked) # connecting the clicked signal with btnClicked slot

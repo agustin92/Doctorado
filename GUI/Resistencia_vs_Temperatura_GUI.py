@@ -280,7 +280,7 @@ class Ui_MainWindow(object):
         self.lineEdit_9.setText(_translate("MainWindow", "20.0"))
         self.pushButton.setText(_translate("MainWindow", "RUN"))
         self.pushButton_2.setText(_translate("MainWindow", "STOP"))
-        self.label_11.setText(_translate("MainWindow", "Resistance vs Temperature_B"))
+        self.label_11.setText(_translate("MainWindow", "Resistance vs Temperature_A"))
         self.label_12.setText(_translate("MainWindow", "Temperature_A vs Time"))
         self.label_13.setText(_translate("MainWindow", "Temperature_B vs Time"))
         self.label_14.setText(_translate("MainWindow", "Real Time Measurements"))

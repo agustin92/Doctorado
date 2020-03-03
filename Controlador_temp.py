@@ -79,9 +79,9 @@ class Ls331():
         temp_ini = self.get_temp()
 #        time.sleep(0.1)
         self.setpoint(temp_ini[0])
-#        time.sleep(0.1)
+        time.sleep(1.0)
         self.set_ramp(rate, out=1)
-#        time.sleep(0.1)
+        time.sleep(1.0)
         self.setpoint(temp)
 #        time.sleep(0.1)
         self.set_range(heat)
@@ -89,9 +89,32 @@ class Ls331():
         
     def get_temp(self):
         # Mide la temperatura en ambos termómetros
-        temp_a = float(self.contemp.query('KRDG? A'))
+        
+        temp_a = self.contemp.query('KRDG? A')
+        len_a = len(temp_a)
+        start = 0
+        end = len_a
+        for i in range(len_a):
+            if temp_a[i] == '+':
+                start = i
+        for i in range(len_a):
+            if temp_a[i] == "\r" :
+                end = i
+        temp_a = float(temp_a[start+1:end])
+                
+            
 #        time.sleep(0.5)
-        temp_b = float(self.contemp.query('KRDG? B'))
+        temp_b = self.contemp.query('KRDG? B')
+        len_b = len(temp_b)
+        start = 0
+        end = len_a
+        for i in range(len_b):
+            if temp_b[i] == '+':
+                start = i
+        for i in range(len_b):
+            if temp_b[i] == "\r" :
+                end = i
+        temp_b = float(temp_b[start+1:end])
         return temp_a, temp_b
     
     def get_heater(self):

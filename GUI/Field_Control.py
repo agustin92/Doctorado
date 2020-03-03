@@ -45,7 +45,7 @@ class Worker(QRunnable):
         super(Worker, self).__init__()
 
         # Store constructor arguments (re-used for processing)
-        self.field = filed_control
+        self.field = field_control
         self.voltage = voltage
         self.signals = WorkerSignals()
 
@@ -54,7 +54,7 @@ class Worker(QRunnable):
     
     def stop(self):
         self.field.set_voltage_steps(0)
-        sleep(5)     
+        time.sleep(5)     
     
     @pyqtSlot()
     def run(self):
@@ -62,7 +62,7 @@ class Worker(QRunnable):
         '''
         try:
             self.field.set_voltage_steps(self.voltage)
-            sleep(5)
+            time.sleep(5)
             
         finally:
             self.signals.finished.emit()  # Done
@@ -130,7 +130,7 @@ class mywindow(QtWidgets.QMainWindow):
             self.voltage = float(self.ui.lineEdit_3.text())
                    
                 
-        self.worker = Worker(self.field_control, self.voltage)
+        self.worker = Worker(self.field_controler, self.voltage)
         
 #        self.worker.signals.result.connect(self.update)
         self.worker.signals.finished.connect(self.end)

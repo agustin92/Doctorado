@@ -8,7 +8,7 @@ temperatura fija
 """
 
 import Keithley_6221 as kd
-import Controlador_campo as cc
+#import Controlador_campo as cc
 import matplotlib.pyplot as plt
 import numpy as np
 import pyqtgraph as pg
@@ -16,13 +16,13 @@ import time
 
 
 res = kd.K6221()
-campo = cc.FieldControl()
+#campo = cc.FieldControl()
 
 
 
 params= {'current_mA': 0.1,
          'samples' : 10,
-         'number' : 10,
+         'number' : 100,
          'time_sleep' : 0.5,
          'save' : False,
          'name' : ''
