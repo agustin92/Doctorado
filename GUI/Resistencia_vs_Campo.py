@@ -15,8 +15,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import numpy as np
 import time 
-#import Controlador_campo as cc
-#import Keithley_6221 as kd
+import Controlador_campo as cc
+import Keithley_6221 as kd
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -195,10 +195,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
         self.path = ''
         
-        self.voltage = []
-        self.resistance = []
-        self.field = []
-        
+
         self.show()
         self.threadpool = QThreadPool()
         self._translate = QtCore.QCoreApplication.translate
@@ -261,6 +258,10 @@ class mywindow(QtWidgets.QMainWindow):
     def start(self):
         
 #        self.curve.setData([1,2,3],[4,3,2])
+        self.voltage = []
+        self.resistance = []
+        self.field = []
+        
         
         self.param = {'current_mA': float(self.ui.lineEdit.text()),
                       'samples': int(self.ui.lineEdit_2.text()),

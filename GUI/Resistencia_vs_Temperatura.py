@@ -159,6 +159,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
         self.path = ''
         
+        self.ui.pushButton_4.clicked.connet(self.plot_temp)
+        self.plot_temp_b = True
+        
         self.show()
         self.threadpool = QThreadPool()
         self._translate = QtCore.QCoreApplication.translate
@@ -184,6 +187,14 @@ class mywindow(QtWidgets.QMainWindow):
         else: 
             self.save = False
             
+    def plot_temp(self):
+        if self.plot_temp_b:
+            self.plot_temp_b = False
+            self.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_A"))
+        else:
+            self.plot_temp_b = True
+            self.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_B"))
+  
     def update(self,data):
         self.temperature_a.append(data[0])
         self.temperature_b.append(data[1])
@@ -194,8 +205,11 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(str(self.temperature_a[-1]))))
         self.ui.lineEdit_13.setText(self._translate("MainWindow", "{}".format(str(self.temperature_b[-1]))))
         
-
-        self.curve.setData(self.temperature_a,self.resistance)
+        if self.plot_temp_b:
+            self.curve.setData(self.temperature_b,self.resistance)
+        else:
+            self.curve.setData(self.temperature_a,self.resistance)
+            
         self.curve2.setData(self.time,self.temperature_a)
         self.curve3.setData(self.time,self.temperature_b)
         if self.param['save']:
