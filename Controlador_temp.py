@@ -118,7 +118,8 @@ class Ls331():
         return temp_a, temp_b
     
     def get_heater(self):
-        print(self.contemp.query('HTR?'))
+        return int(self.contemp.query('HTR?'))
+#        print(self.contemp.query('HTR?'))
     
 def graficar_temp(temp):
     a=[]
