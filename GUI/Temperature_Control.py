@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import numpy as np
 import time 
-#import Controlador_temp as te
+import Controlador_temp as te
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -67,7 +67,8 @@ class Worker(QRunnable):
     
     def stop(self):
         self.running = False
-        self.temp.set_range()     
+        self.temp.set_range() 
+        self.temp.set_ramp(0)
     
     @pyqtSlot()
     def run(self):
@@ -82,7 +83,7 @@ class Worker(QRunnable):
         ti = time.time()
         
         while self.running:
-            self.results_inst = self.measure()
+            self.results_inst[:3] = self.measure()
             time_aux = time.time() - ti
             self.results_inst[3] = time_aux
             self.signals.result.emit(self.results_inst)
@@ -119,7 +120,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.graphWidget_2.setLabel('left', "Temperature_B", units='K')
         self.ui.graphWidget_2.setLabel('bottom', "Time", units='seg')        
 
-
+        self.ui.progressBar.setRange(0, 100)
+        self.ui.progressBar.setValue(0)
+        
     def heater_state(self):
         if self.ui.comboBox.currentText() == 'Off':
             self.heater = 0
@@ -153,8 +156,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_4.setText(self._translate("MainWindow", "{}".format(str(self.temperature_a[-1]))))
         self.ui.lineEdit_5.setText(self._translate("MainWindow", "{}".format(str(self.temperature_b[-1]))))
         
-        self.curve2.setData(self.time,self.temperature_a)
-        self.curve3.setData(self.time,self.temperature_b)    
+        self.ui.progressBar.setValue(self.heater_output)
+        self.curve.setData(self.time,self.temperature_a)
+        self.curve2.setData(self.time,self.temperature_b)    
     
     def start(self):
         

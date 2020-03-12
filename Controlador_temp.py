@@ -73,8 +73,8 @@ class Ls331():
 
     def change_temp(self,temp,rate,heat):
         # Cambio el setpoint y el rate para iniciar una rampa de temperatura.
-        self.set_ramp(1)
-#        time.sleep(0.1)
+        self.set_ramp(1.0)
+        time.sleep(1.0)
         temp_ini = []
         temp_ini = self.get_temp()
 #        time.sleep(0.1)
@@ -118,8 +118,19 @@ class Ls331():
         return temp_a, temp_b
     
     def get_heater(self):
-        return int(self.contemp.query('HTR?'))
-#        print(self.contemp.query('HTR?'))
+        state = self.contemp.query('HTR?')
+        len_state = len(state) 
+        start= 0
+        end = len_state
+        
+        for i in range(len_state):
+            if state[i] == '+':
+                start=i
+        for i in range(len_state):
+            if state[i] == '\r':
+                end = i
+        return int(float(state[start+1:end]))
+
     
 def graficar_temp(temp):
     a=[]
