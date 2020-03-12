@@ -144,7 +144,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>60</y>
+      <y>30</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -164,7 +164,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>112</y>
+      <y>82</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -224,7 +224,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>30</y>
+      <y>10</y>
       <width>141</width>
       <height>17</height>
      </rect>
@@ -333,7 +333,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>80</y>
+      <y>50</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -346,7 +346,7 @@
     <property name="geometry">
      <rect>
       <x>230</x>
-      <y>130</y>
+      <y>100</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -523,6 +523,26 @@
     </property>
     <property name="text">
      <string>Browse Directory</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>140</y>
+      <width>161</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Pre-Magnetization</string>
     </property>
    </widget>
   </widget>

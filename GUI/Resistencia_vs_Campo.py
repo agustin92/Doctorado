@@ -54,6 +54,8 @@ class Worker(QRunnable):
         super(Worker, self).__init__()
 
         # Store constructor arguments (re-used for processing)
+        # Toma los parámetros definidos previamente en la interfaz gráfica
+        # Inicia la comunicacion con los instrumentos
         self.parameters = parameters
         self.signals = WorkerSignals()
         self.results_inst = [0.0,0.0,0.0]
@@ -61,13 +63,19 @@ class Worker(QRunnable):
         self.res = kd.K6221()
         self.campo = cc.FieldControl()
 
-        # Add the callback to our kwargs
+        # 
     
     def measure(self):
+        '''
+        Mido la resistencia varias veces y promedio el resultado.
+        '''
         resistance = self.res.mean_meas(self.parameters['samples'])
         return resistance
     
     def stop(self):
+        '''
+        Cambia el flag de self.running para parar la medicion y el thread.
+        '''
         self.running = False         
     
     @pyqtSlot()
@@ -76,6 +84,9 @@ class Worker(QRunnable):
         results_inst[0] = Voltage
         results_inst[1] = Resistencia
         results_inst[2] = Campo
+        
+        Antes de medir hace un reset del equipo (ver controlador Keithley_6221)
+        y arma el modo delta
         '''
         
         self.res.reset()
@@ -85,6 +96,15 @@ class Worker(QRunnable):
         
         
         try:
+            # Confirma si es necesario realizar el ciclo para pre-magnetizar la muestra
+            if self.parameters['pre_magnetization']:
+                self.campo.set_voltage_steps(self.parameters['cmin'] )
+                time.sleep(2)
+                self.campo.set_voltage_steps(0.0)
+            
+            # Ciclo de medicion para la curva M(H)
+            # Primero sube al campo maximos, luego al campo minimo y termina en cero
+            # En cada paso corrobora que el usuario no haya detenido la medición
             while self.results_inst[0] < self.parameters['cmax'] and self.running:
                 self.campo.set_voltage_steps(self.results_inst[0])
                 time.sleep(2)
@@ -151,10 +171,11 @@ class Worker(QRunnable):
                 result = self.results_inst
                 self.signals.result.emit(result)
                 time.sleep(0.1)
-                
+           #Finalizo la medicion si es que no fue detenida previamente     
                 self.res.stop_meas()
                 
-                
+            # Si el usuario detiene la medicion cambia el flag.
+            # Paro la medicion del modo delta y lleo el campo a cero
             if not self.running:
                 self.res.stop_meas()
                 self.campo.set_voltage_steps(0.0)
@@ -163,8 +184,12 @@ class Worker(QRunnable):
             
         except not self.running:
             print('pare la medicion')
-
+            
+            
         finally:
+            '''
+            Emito la señal de detencion del thread
+            '''
             self.signals.finished.emit()  # Done
 
 
@@ -173,21 +198,30 @@ class mywindow(QtWidgets.QMainWindow):
     def __init__(self):
  
         super(mywindow, self).__init__()
- 
+        '''
+        Setup inicial para configurar los aspectos relevantes de la GUI
+        '''
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         
+        # Corroboro el estado de la calibracion 
         self.ui.checkBox.stateChanged.connect(self.calibration_check)
         self.calibration = False
 
+        # Corroboro si es necesario guardar la medicion
         self.ui.checkBox_2.stateChanged.connect(self.save_check)
         self.save = False
         
+        # Corroboro si es necesario hacer un ciclo de pre-magnetizacion
+        self.ui.checkBox_3.stateChanged.connect(self.pre_mag)
+        self.pre_magnetization = False
+        
+        # Configuro los parametros del grafico
         self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
         self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
         self.ui.graphWidget.setLabel('bottom', "Voltaje", units='V')
         
-        
+        # Inicia la medicion al apretar el boton start
         self.ui.pushButton.pressed.connect(self.start)
 #        self.running = False
         self.ui.pushButton_2.pressed.connect(self.stop)
@@ -221,6 +255,14 @@ class mywindow(QtWidgets.QMainWindow):
             self.save = True
         else: 
             self.save = False
+            
+    def pre_mag(self,status):
+        
+        if status == QtCore.Qt.Checked:
+            self.pre_magnetization = True
+        else:
+            self.pre_magnetization = False
+        
             
     def update(self,data):
         self.resistance.append(data[1])
@@ -257,7 +299,7 @@ class mywindow(QtWidgets.QMainWindow):
         
     def start(self):
         
-#        self.curve.setData([1,2,3],[4,3,2])
+
         self.voltage = []
         self.resistance = []
         self.field = []
@@ -272,7 +314,8 @@ class mywindow(QtWidgets.QMainWindow):
                       'slope' : float(self.ui.lineEdit_6.text()),
                       'intercept' : float(self.ui.lineEdit_7.text()),
                       'save' : self.save,
-                      'name' : str(self.ui.lineEdit_8.text())
+                      'name' : str(self.ui.lineEdit_8.text()),
+                      'pre_magnetization' : self.pre_magnetization
                      }        
         
 
@@ -296,21 +339,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.threadpool.start(self.worker) 
         self.ui.lineEdit_9.setText(self._translate("MainWindow", "Running"))
 
-            
-#        self.ui.pushButton.clicked.connect(self.btnClicked) # connecting the clicked signal with btnClicked slot
-# 
-#    def btnClicked(self):
-# 
-#        self.ui.label.setText("Button Clicked")
- 
- 
-#app = QtWidgets.QApplication([])
-# 
-#application = mywindow()
-# 
-#application.show()
-#app.exec_()
-#sys.exit(app.exec())
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     application = mywindow()
