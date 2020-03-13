@@ -54,7 +54,7 @@ class Worker(QRunnable):
         # Store constructor arguments (re-used for processing)
         self.parameters = parameters
         self.signals = WorkerSignals()
-        self.results_inst = [0.0,0.0,0.0,0.0]
+        self.results_inst = [0.0,0.0,0.0,0,0.0]
         self.running = True
         self.res = kd.K6221()
         self.temp = te.Ls331()
@@ -67,7 +67,8 @@ class Worker(QRunnable):
         resistance = self.res.mean_meas(self.parameters['samples'])
         temperature_a = self.temp.get_temp()[0]
         temperature_b = self.temp.get_temp()[1]
-        return temperature_a, temperature_b, resistance
+        heater_output = self.temp.get_heater()
+        return temperature_a, temperature_b, resistance, heater_output
     
     def stop(self):
         self.running = False         
@@ -78,6 +79,7 @@ class Worker(QRunnable):
         results_inst[0] = Temperature_a
         results_inst[1] = Temperature_b
         results_inst[2] = Resistance
+        results_inst[3] = Heater output
         results_inst[3] = Time
         '''
         
@@ -94,8 +96,8 @@ class Worker(QRunnable):
         try:
             while True and self.running:
                 time_aux = time.time() - ti             
-                self.results_inst[:3] = self.measure()
-                self.results_inst[3] = time_aux
+                self.results_inst[:4] = self.measure()
+                self.results_inst[4] = time_aux
                 result = self.results_inst
                 self.signals.result.emit(result)
                 time.sleep(self.parameters['sleep_time'])
@@ -162,6 +164,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.pushButton_4.clicked.connet(self.plot_temp)
         self.plot_temp_b = True
         
+        self.ui.progressBar.setRange(0, 100)
+        self.ui.progressBar.setValue(0)        
+        
         self.show()
         self.threadpool = QThreadPool()
         self._translate = QtCore.QCoreApplication.translate
@@ -199,7 +204,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.temperature_a.append(data[0])
         self.temperature_b.append(data[1])
         self.resistance.append(data[2])
-        self.time.append(data[3])
+        self.time.append(data[4])
         
         self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(str(self.resistance[-1]))))
         self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(str(self.temperature_a[-1]))))
@@ -212,6 +217,7 @@ class mywindow(QtWidgets.QMainWindow):
             
         self.curve2.setData(self.time,self.temperature_a)
         self.curve3.setData(self.time,self.temperature_b)
+        self.ui.progressBar.setValue(data[3])
         if self.param['save']:
             self.f.write('{},{},{},{}\n'.format(self.time[-1],self.temperature_a[-1],
                                                 self.temperature_b[-1],self.resistance[-1]))

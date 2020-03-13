@@ -19,12 +19,7 @@ from pyqtgraph import PlotWidget, plot
 from Temperature_Control_GUI import Ui_MainWindow
  
 import sys
- 
-'''
- Pendientes Medir la temperatura cada algunos segundos y reportar cuando estoy
-a una distancia de 0.5K para indicar que ya llegue a la temperatura deseada
 
-'''
 
 class WorkerSignals(QObject):
     '''
@@ -49,7 +44,6 @@ class Worker(QRunnable):
 
     def __init__(self, parameters):
         super(Worker, self).__init__()
-
         # Store constructor arguments (re-used for processing)
         self.parameters = parameters
         self.signals = WorkerSignals()
@@ -149,9 +143,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.temperature_a.append(data[0])
         self.temperature_b.append(data[1])
         self.heater_output = data[2]        
-        self.time.append(data[3])
-
-        
+        self.time.append(data[3])     
         
         self.ui.lineEdit_4.setText(self._translate("MainWindow", "{}".format(str(self.temperature_a[-1]))))
         self.ui.lineEdit_5.setText(self._translate("MainWindow", "{}".format(str(self.temperature_b[-1]))))
@@ -168,23 +160,16 @@ class mywindow(QtWidgets.QMainWindow):
         self.heater_output = 0
         
         if not self.running_state:
-    #        self.curve.setData([1,2,3],[4,3,2])
+
             self.running_state = True
-            
-            
             self.heater_state()
             
             self.param = {'temperature' : float(self.ui.lineEdit.text()),
                           'rate': float(self.ui.lineEdit_2.text()),
                           'heater' : self.heater,
                          }        
-            
-    
-            tiempo_aux_ini = time.time()
-            tiempo_aux = tiempo_aux_ini
-            while (tiempo_aux - tiempo_aux_ini) < 2:
-                tiempo_aux = time.time()
                 
+            time.sleep(2)                
                     
             self.worker = Worker(self.param)
             self.worker.signals.result.connect(self.update)
@@ -194,14 +179,6 @@ class mywindow(QtWidgets.QMainWindow):
 
             
 
- 
-#app = QtWidgets.QApplication([])
-# 
-#application = mywindow()
-# 
-#application.show()
-#app.exec_()
-#sys.exit(app.exec())
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     application = mywindow()
