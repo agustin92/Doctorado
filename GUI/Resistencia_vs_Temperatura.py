@@ -13,8 +13,8 @@ from PyQt5.QtCore import *
 import numpy as np
 import time 
 #import Controlador_campo as cc
-import Keithley_6221 as kd
-import Controlador_temp as te
+# import Keithley_6221 as kd
+# import Controlador_temp as te
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -161,7 +161,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
         self.path = ''
         
-        self.ui.pushButton_4.clicked.connet(self.plot_temp)
+        self.ui.pushButton_4.clicked.connect(self.plot_temp)
         self.plot_temp_b = True
         
         self.ui.progressBar.setRange(0, 100)
@@ -195,10 +195,12 @@ class mywindow(QtWidgets.QMainWindow):
     def plot_temp(self):
         if self.plot_temp_b:
             self.plot_temp_b = False
-            self.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_A"))
+            self.ui.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_A"))
+            self.ui.graphWidget.setLabel('bottom', "Temperature_A", units='K')
         else:
             self.plot_temp_b = True
-            self.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_B"))
+            self.ui.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_B"))
+            self.ui.graphWidget.setLabel('bottom', "Temperature_B", units='K')
   
     def update(self,data):
         self.temperature_a.append(data[0])

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\Resistencia_vs_Temperatura_GUI.ui'
+# Form implementation generated from reading ui file 'Resistencia_vs_Temperatura_GUI.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #

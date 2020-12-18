@@ -15,8 +15,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import numpy as np
 import time 
-import Controlador_campo as cc
-import Keithley_6221 as kd
+# import Controlador_campo as cc
+# import Keithley_6221 as kd
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot

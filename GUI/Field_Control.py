@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import numpy as np
 import time 
-import Controlador_campo as cc
+# import Controlador_campo as cc
 
 
  
@@ -81,7 +81,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.checkBox.stateChanged.connect(self.calibration_check)
         self.calibration = False
         
-        self.field_controler = cc.FieldControl()
+        # self.field_controler = cc.FieldControl()
   
         
         self.ui.pushButton.pressed.connect(self.start)
