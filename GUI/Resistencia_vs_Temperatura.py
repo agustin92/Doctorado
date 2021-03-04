@@ -12,9 +12,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import numpy as np
 import time 
-#import Controlador_campo as cc
-# import Keithley_6221 as kd
-# import Controlador_temp as te
+import Controlador_campo as cc
+import Keithley_6221 as kd
+import Controlador_temp as te
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -119,7 +119,8 @@ class Worker(QRunnable):
             
         except not self.running:
             self.res.stop_meas()
-            self.temp.set_range()
+            if not self.parameters['temp_check']:
+                self.temp.set_range()
             print('pare la medicion')
             pass
 
@@ -141,6 +142,9 @@ class mywindow(QtWidgets.QMainWindow):
 
         self.ui.checkBox_2.stateChanged.connect(self.save_check)
         self.save = False
+        
+        self.ui.checkBox_3.stateChanged.connect(self.temp_check)
+        self.temp_c = False
         
         self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
         self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
@@ -191,6 +195,13 @@ class mywindow(QtWidgets.QMainWindow):
             self.save = True
         else: 
             self.save = False
+
+    def temp_check(self,status):
+        
+        if status == QtCore.Qt.Checked:
+            self.temp_c = True
+        else: 
+            self.temp_c = False
             
     def plot_temp(self):
         if self.plot_temp_b:
@@ -275,7 +286,8 @@ class mywindow(QtWidgets.QMainWindow):
                           'heater' : self.heater,
                           'sleep_time' : float(self.ui.lineEdit_9.text()),
                           'save' : self.save,
-                          'name' : str(self.ui.lineEdit_10.text())
+                          'name' : str(self.ui.lineEdit_10.text()),
+                          'temp_check' : self.temp_c
                          }        
             
     
