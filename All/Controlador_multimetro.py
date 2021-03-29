@@ -56,7 +56,7 @@ class K2010():
         raux=[]
         for i in range(samples):
             raux.append(self.measure())
-#            time.sleep(0.2)
+            time.sleep(0.2)
         return np.mean(np.array(raux))
             
         

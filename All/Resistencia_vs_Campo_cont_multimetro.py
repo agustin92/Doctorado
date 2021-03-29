@@ -14,12 +14,12 @@ import time
 
 
 import Controlador_campo as cc
-import Keithley_6221 as mt
+import Controlador_multimetro as mt
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
  
-from Resistencia_vs_Campo_cont_GUI import Ui_MainWindow
+from Resistencia_vs_Campo_cont_multimetro_GUI import Ui_MainWindow
  
 import sys
 
@@ -145,7 +145,11 @@ class Worker2(QRunnable):
         self.signals = WorkerSignals2()
         self.mul = mul
         self.mul.reset()
-        self.mul.delta_mode(self.parameters['current_mA'])
+        if self.parameters['mode'] == '2_Wires':
+            self.mul.mode_2wire()
+        elif self.parameters['mode'] == '4_Wires':
+            self.mul.mode_4wire()
+        self.mul.continuous_mode(on=True) 
         self.running_state = False
      
     
@@ -160,7 +164,7 @@ class Worker2(QRunnable):
             self.signals.result2.emit(self.mul.mean_meas(self.parameters['samples']))
             time.sleep(self.parameters['sleep_time'])
             
-        self.mul.stop_meas()
+        self.mul.continuous_mode()
             
     def stop(self):
         '''
@@ -202,7 +206,7 @@ class mywindow(QtWidgets.QMainWindow):
         self._translate = QtCore.QCoreApplication.translate
         # Cargo los equipos como objetos        
         self.field_controler = cc.FieldControl()    
-        self.mul = mt.K6221()
+        self.mul = mt.K2010()
         # Ventana para seleccionar la carpeta de guardado    
         self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
         self.path = ''
@@ -384,7 +388,7 @@ class mywindow(QtWidgets.QMainWindow):
                       'rate' : float(self.ui.lineEdit_5.text())
                      }             
         
-        self.param2 = {'current_mA': float(self.ui.lineEdit.text())/1000,
+        self.param2 = {'mode': self.ui.comboBox_2.currentText(),
                       'samples': int(self.ui.lineEdit_2.text()),    
                       'sleep_time' : float(self.ui.lineEdit_13.text())
                      }               
