@@ -162,11 +162,13 @@ class Worker2(QRunnable):
         self.running_state = True
         
         while self.running_state:
-            # meas_aux = self.mul.mean_meas(self.parameters['samples'])
-            meas_aux = []
-            for i in range(self.parameters['samples']):
-                meas_aux.append(self.mul.single_shot())
-            meas_aux = self.mul.single_shot()
+            meas_aux = self.mul.mean_meas(self.parameters['samples'])
+            # meas_aux = []
+            # for i in range(self.parameters['samples']):
+            #     meas_aux.append(self.mul.single_shot())
+            #     time.sleep(0.2)
+            # meas_mean = np.mean(np.array(meas_aux))
+            # meas_mean = self.mul.single_shot()
             self.signals.result2.emit(meas_aux)
             time.sleep(self.parameters['sleep_time'])
             

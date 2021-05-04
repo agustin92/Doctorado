@@ -13,7 +13,7 @@ from PyQt5.QtCore import *
 import numpy as np
 import time 
 import Controlador_campo as cc
-import Controlador_multimetro as mt
+import Controlador_multimetro_agilent as mt
 import Controlador_temp as te
 
 import pyqtgraph as pg
@@ -221,12 +221,12 @@ class mywindow(QtWidgets.QMainWindow):
         if self.plot_temp_b:
             self.curve.setData(self.temperature_b,self.resistance)
         else:
-            self.curve.setData(self.temperature_a,self.resistance)
+            self.curve.setData(self.time,self.resistance)
             
         self.curve2.setData(self.time,self.temperature_a)
         self.curve3.setData(self.time,self.temperature_b)
         self.ui.progressBar.setValue(data[3])
-        if self.param['save']:
+        if self.param['save'] and self.running_state:
             self.f.write('{},{},{},{}\n'.format(self.time[-1],self.temperature_a[-1],
                                                 self.temperature_b[-1],self.resistance[-1]))
 

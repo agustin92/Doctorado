@@ -81,7 +81,7 @@ class Worker(QRunnable):
             time_aux = time.time() - ti
             self.results_inst[3] = time_aux
             self.signals.result.emit(self.results_inst)
-            time.sleep(10)
+            time.sleep(5)
             
         self.signals.finished.emit()  # Done
         self.running = False
