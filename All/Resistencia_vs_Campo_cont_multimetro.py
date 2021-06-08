@@ -14,7 +14,7 @@ import time
 
 
 import Controlador_campo as cc
-import Controlador_multimetro_agilent as mt
+import Controlador_multimetro as mt
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -162,11 +162,7 @@ class Worker2(QRunnable):
         self.running_state = True
         
         while self.running_state:
-            # meas_aux = self.mul.mean_meas(self.parameters['samples'])
-            meas_aux = []
-            for i in range(self.parameters['samples']):
-                meas_aux.append(self.mul.single_shot())
-            meas_aux = self.mul.single_shot()
+            meas_aux = self.mul.mean_meas(self.parameters['samples'])
             self.signals.result2.emit(meas_aux)
             time.sleep(self.parameters['sleep_time'])
             

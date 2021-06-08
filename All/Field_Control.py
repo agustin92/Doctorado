@@ -81,7 +81,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.checkBox.stateChanged.connect(self.calibration_check)
         self.calibration = False
         
-        # self.field_controler = cc.FieldControl()
+        self.field_controler = cc.FieldControl()
   
         
         self.ui.pushButton.pressed.connect(self.start)
