@@ -43,6 +43,17 @@ class K6221():
                     tiempo_aux = time.time()
             self.cs.write('INIT:IMM')
     
+    def current_mode(self,current,comp = 100):
+        self.cs.write('CURR:RANG {}'.format(str(current)))
+        self.cs.write('CURR {}'.format(str(current)))
+        self.cs.write('CURRent:COMP {}'.format(str(comp)))
+        
+    def output(self,on = False):
+        if on:
+            self.cs.write('OUTP ON')
+        else:
+            self.cs.write('CLE')
+    
     def change_current(self,current):
         self.cs.write('SOUR:DELT:HIGH {}'.format(str(current)))
     
@@ -58,7 +69,8 @@ class K6221():
         self.cs.write('CURRent:RANGe:AUTO ON')
         self.cs.write('CURRent:COMP 100')
 
-
+    def resest_soft(self):
+        self.cs.write('*RST')
     
     def stop_meas(self):
         self.cs.write('SOUR:SWE:ABOR')
