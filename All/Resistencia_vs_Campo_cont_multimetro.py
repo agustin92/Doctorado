@@ -1,424 +1,299 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 18 18:19:26 2020
 
-@author: Agustin Lopez Pedroso
-agustin.lopezpedroso@gmail.com
-"""
-from PyQt5 import QtWidgets, Qt, QtCore
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-import numpy as np
-import time 
+# Form implementation generated from reading ui file 'Resistencia_vs_Campo_cont_multimetro_GUI.ui'
+#
+# Created by: PyQt5 UI code generator 5.9.2
+#
+# WARNING! All changes made in this file will be lost!
 
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-import Controlador_campo as cc
-import Controlador_multimetro as mt
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(691, 607)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(20, 10, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(20, 60, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName("label_2")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_2.setGeometry(QtCore.QRect(20, 80, 151, 21))
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(20, 160, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_3.setFont(font)
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(20, 110, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_4.setFont(font)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(20, 210, 101, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(330, 30, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(330, 82, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
+        self.label_8 = QtWidgets.QLabel(self.centralwidget)
+        self.label_8.setGeometry(QtCore.QRect(310, 210, 171, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(510, 20, 131, 51))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton.setFont(font)
+        self.pushButton.setObjectName("pushButton")
+        self.checkBox = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox.setGeometry(QtCore.QRect(330, 10, 141, 17))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.checkBox.setFont(font)
+        self.checkBox.setObjectName("checkBox")
+        self.checkBox_2 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_2.setGeometry(QtCore.QRect(330, 180, 141, 17))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.checkBox_2.setFont(font)
+        self.checkBox_2.setObjectName("checkBox_2")
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(510, 80, 131, 51))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.graphWidget = PlotWidget(self.centralwidget)
+        self.graphWidget.setGeometry(QtCore.QRect(20, 260, 421, 301))
+        self.graphWidget.setObjectName("graphWidget")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_3.setGeometry(QtCore.QRect(20, 130, 151, 21))
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_4.setGeometry(QtCore.QRect(20, 180, 151, 21))
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.lineEdit_5 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_5.setGeometry(QtCore.QRect(20, 230, 111, 21))
+        self.lineEdit_5.setObjectName("lineEdit_5")
+        self.lineEdit_6 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_6.setGeometry(QtCore.QRect(330, 50, 171, 21))
+        self.lineEdit_6.setObjectName("lineEdit_6")
+        self.lineEdit_7 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_7.setGeometry(QtCore.QRect(330, 100, 171, 21))
+        self.lineEdit_7.setObjectName("lineEdit_7")
+        self.lineEdit_8 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_8.setGeometry(QtCore.QRect(310, 230, 201, 21))
+        font = QtGui.QFont()
+        font.setItalic(False)
+        self.lineEdit_8.setFont(font)
+        self.lineEdit_8.setObjectName("lineEdit_8")
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(450, 260, 61, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+        self.lineEdit_9 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_9.setGeometry(QtCore.QRect(450, 280, 131, 21))
+        self.lineEdit_9.setObjectName("lineEdit_9")
+        self.lineEdit_10 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_10.setGeometry(QtCore.QRect(450, 330, 131, 21))
+        self.lineEdit_10.setText("")
+        self.lineEdit_10.setObjectName("lineEdit_10")
+        self.label_10 = QtWidgets.QLabel(self.centralwidget)
+        self.label_10.setGeometry(QtCore.QRect(450, 310, 91, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_10.setFont(font)
+        self.label_10.setObjectName("label_10")
+        self.lineEdit_11 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_11.setGeometry(QtCore.QRect(450, 380, 131, 21))
+        self.lineEdit_11.setText("")
+        self.lineEdit_11.setObjectName("lineEdit_11")
+        self.label_11 = QtWidgets.QLabel(self.centralwidget)
+        self.label_11.setGeometry(QtCore.QRect(450, 360, 91, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_11.setFont(font)
+        self.label_11.setObjectName("label_11")
+        self.lineEdit_12 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_12.setGeometry(QtCore.QRect(450, 430, 131, 21))
+        self.lineEdit_12.setText("")
+        self.lineEdit_12.setObjectName("lineEdit_12")
+        self.label_12 = QtWidgets.QLabel(self.centralwidget)
+        self.label_12.setGeometry(QtCore.QRect(450, 410, 91, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_12.setFont(font)
+        self.label_12.setObjectName("label_12")
+        self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QtCore.QRect(390, 170, 111, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_3.setFont(font)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.checkBox_3 = QtWidgets.QCheckBox(self.centralwidget)
+        self.checkBox_3.setGeometry(QtCore.QRect(330, 140, 161, 17))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.checkBox_3.setFont(font)
+        self.checkBox_3.setObjectName("checkBox_3")
+        self.lineEdit_13 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_13.setGeometry(QtCore.QRect(150, 230, 111, 21))
+        self.lineEdit_13.setObjectName("lineEdit_13")
+        self.label_13 = QtWidgets.QLabel(self.centralwidget)
+        self.label_13.setGeometry(QtCore.QRect(150, 210, 151, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_13.setFont(font)
+        self.label_13.setObjectName("label_13")
+        self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox_2.setGeometry(QtCore.QRect(20, 30, 151, 22))
+        self.comboBox_2.setObjectName("comboBox_2")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_3 = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox_3.setGeometry(QtCore.QRect(190, 30, 131, 22))
+        self.comboBox_3.setObjectName("comboBox_3")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.label_14 = QtWidgets.QLabel(self.centralwidget)
+        self.label_14.setGeometry(QtCore.QRect(190, 10, 121, 21))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_14.setFont(font)
+        self.label_14.setObjectName("label_14")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 691, 21))
+        self.menubar.setObjectName("menubar")
+        self.menuResistencia_vsCampo = QtWidgets.QMenu(self.menubar)
+        self.menuResistencia_vsCampo.setObjectName("menuResistencia_vsCampo")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.menubar.addAction(self.menuResistencia_vsCampo.menuAction())
 
-import pyqtgraph as pg
-from pyqtgraph import PlotWidget, plot
- 
-from Resistencia_vs_Campo_cont_multimetro_GUI import Ui_MainWindow
- 
-import sys
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "Measure Mode"))
+        self.label_2.setText(_translate("MainWindow", "Samples"))
+        self.lineEdit_2.setText(_translate("MainWindow", "0"))
+        self.label_3.setText(_translate("MainWindow", "Voltage Min (Field)"))
+        self.label_4.setText(_translate("MainWindow", "Voltage Max (Field)"))
+        self.label_5.setText(_translate("MainWindow", "Rate (mV/s)"))
+        self.label_6.setText(_translate("MainWindow", "Slope (G/V)"))
+        self.label_7.setText(_translate("MainWindow", "Intercept"))
+        self.label_8.setText(_translate("MainWindow", "Name"))
+        self.pushButton.setText(_translate("MainWindow", "RUN"))
+        self.checkBox.setText(_translate("MainWindow", "Calibratrion"))
+        self.checkBox_2.setText(_translate("MainWindow", "Save"))
+        self.pushButton_2.setText(_translate("MainWindow", "STOP"))
+        self.lineEdit_3.setText(_translate("MainWindow", "0.0"))
+        self.lineEdit_4.setText(_translate("MainWindow", "0.0"))
+        self.lineEdit_5.setText(_translate("MainWindow", "50.0"))
+        self.lineEdit_6.setText(_translate("MainWindow", "0.0"))
+        self.lineEdit_7.setText(_translate("MainWindow", "0.0"))
+        self.lineEdit_8.setText(_translate("MainWindow", "File name (add extension .dat, .csv ...)"))
+        self.label_9.setText(_translate("MainWindow", "Status"))
+        self.lineEdit_9.setText(_translate("MainWindow", "Stop"))
+        self.label_10.setText(_translate("MainWindow", "Resistance"))
+        self.label_11.setText(_translate("MainWindow", "Voltage"))
+        self.label_12.setText(_translate("MainWindow", "Field"))
+        self.pushButton_3.setText(_translate("MainWindow", "Browse Directory"))
+        self.checkBox_3.setText(_translate("MainWindow", "From Zero"))
+        self.lineEdit_13.setText(_translate("MainWindow", "1.0"))
+        self.label_13.setText(_translate("MainWindow", "Sleep Time (s)"))
+        self.comboBox_2.setItemText(0, _translate("MainWindow", "2_Wires"))
+        self.comboBox_2.setItemText(1, _translate("MainWindow", "4_Wires"))
+        self.comboBox_3.setItemText(0, _translate("MainWindow", "Auto"))
+        self.comboBox_3.setItemText(1, _translate("MainWindow", "1GOhm"))
+        self.comboBox_3.setItemText(2, _translate("MainWindow", "100MOhm"))
+        self.comboBox_3.setItemText(3, _translate("MainWindow", "10MOhm"))
+        self.comboBox_3.setItemText(4, _translate("MainWindow", "1MOhm"))
+        self.comboBox_3.setItemText(5, _translate("MainWindow", "100kOhm"))
+        self.comboBox_3.setItemText(6, _translate("MainWindow", "10kOhm"))
+        self.comboBox_3.setItemText(7, _translate("MainWindow", "1kOhm"))
+        self.comboBox_3.setItemText(8, _translate("MainWindow", "100Ohm"))
+        self.label_14.setText(_translate("MainWindow", "Range"))
+        self.menuResistencia_vsCampo.setTitle(_translate("MainWindow", "Resistencia vs Campo"))
 
-class WorkerSignals(QObject):
-    '''
-    Defines the signals available from a running worker thread.
-    Supported signals are:
-    finished
-        No data    
-  
-    result
-        `object` data returned from processing, anything
-
-    '''
-    result1 = pyqtSignal(object)
-    max_field = pyqtSignal()
-    finished1 = pyqtSignal()
-    zero_field = pyqtSignal()
-    
-class Worker(QRunnable):
-    '''
-    Field thread.
-    Change the value of the magnetic field and emit a signal after reached the set value. 
-
-    Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
-    '''
-
-    def __init__(self, params, field_control):
-        super(Worker, self).__init__()
-        # Store constructor arguments (re-used for processing)
-        self.field = field_control
-        self.parameters = params
-        self.signals = WorkerSignals()
-        self.running = False
-        # Add the callback to our kwargs
-
-    
-    def stop(self):
-        '''
-        Change the self.running flag to stop the measurment. This function is used when the user stop the measurment
-        '''
-        self.running = False
-    
-    @pyqtSlot()
-    def run(self):
-        '''
-        Running thread. This function makes field loop and sends a signal after reaching the max field and after
-        finishing the loop.
-        '''
-        cmax = self.parameters['cmax']
-        cmin = self.parameters['cmin']
-        rate = self.parameters['rate']/1000
-        
-        self.running = True
-        
-        caux = 0
-        
-        while caux < cmax and self.running:
-            self.field.set_voltage(caux)
-            self.signals.result1.emit(caux)
-            caux += rate/2
-            time.sleep(0.5)
-        
-        if self.running:
-            caux = cmax
-            self.field.set_voltage(caux)
-            self.signals.result1.emit(caux)
-            self.signals.max_field.emit()
-        
-        while caux > cmin and self.running:
-            self.field.set_voltage(caux)
-            self.signals.result1.emit(caux)
-            caux += -rate/2
-            time.sleep(0.5)         
-            
-        if self.running:
-            caux = cmin
-            self.field.set_voltage(caux)
-            self.signals.result1.emit(caux)
-            
-        while caux < cmax and self.running:
-            self.field.set_voltage(caux)
-            self.signals.result1.emit(caux)
-            caux += rate/2
-            time.sleep(0.5) 
-         
-        if self.running:  
-            self.signals.finished1.emit()
-            self.field.set_voltage_steps(0)
-              # Done
-            
-        if not self.running:
-            self.signals.zero_field.emit()
-            self.field.set_voltage_steps(0)
-            
-            
-class WorkerSignals2(QObject):
-    '''
-    Defines the signals available from a running worker thread.
-    Supported signals are:
-    finished
-        No data    
-  
-    result
-        `object` data returned from processing, anything
-
-    '''
-    result2 = pyqtSignal(object)
-    
-class Worker2(QRunnable):
-    '''
-    Measure thread.
-    Get the resistance and transmit the result to the main thread
-
-    Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
-    '''
-
-    def __init__(self, parameters, mul):
-        super(Worker2, self).__init__()
-        # Store constructor arguments (re-used for processing)
-        self.parameters = parameters
-        self.signals = WorkerSignals2()
-        self.mul = mul
-        self.mul.reset()
-        if self.parameters['mode'] == '2_Wires':
-            self.mul.mode_2wire()
-        elif self.parameters['mode'] == '4_Wires':
-            self.mul.mode_4wire()
-        self.mul.continuous_mode(on=True) 
-        self.running_state = False
-        time.sleep(1)
-     
-    
-    @pyqtSlot()
-    def run(self):
-        '''
-        Measure the resistance value until the field loop is finished or if the user stoped manualy the measurement
-        '''
-        self.running_state = True
-        
-        while self.running_state:
-            meas_aux = self.mul.mean_meas(self.parameters['samples'])
-            self.signals.result2.emit(meas_aux)
-            time.sleep(self.parameters['sleep_time'])
-            
-        self.mul.continuous_mode()
-            
-    def stop(self):
-        '''
-        Change the running_state flag to False to finish the measurment
-        '''
-        self.running_state = False
-
-class mywindow(QtWidgets.QMainWindow):
- 
-    def __init__(self):
- 
-        super(mywindow, self).__init__()
- 
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
-           
-        
-        self.ui.pushButton.pressed.connect(self.start)        
-        self.running_state = False        
-        self.ui.pushButton_2.pressed.connect(self.user_stop) 
-        self.ui.pushButton_2.setEnabled(False)
-        # Corroboro el estado de la calibracion 
-        self.ui.checkBox.stateChanged.connect(self.calibration_check)
-        self.calibration = False
-        # Corroboro si es necesario guardar la medicion
-        self.ui.checkBox_2.stateChanged.connect(self.save_check)
-        self.save = False
-        # Corroboro si es necesario empezar la medición desde campo cero
-        self.ui.checkBox_3.stateChanged.connect(self.from_zero_)
-        self.from_zero = False  
-        # Configuro los parametros del grafico
-        self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
-        self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
-        self.ui.graphWidget.setLabel('bottom', "Voltaje", units='V')   
-        self.measure = False
-        
-        self.show()
-        self.threadpool = QThreadPool ()
-        self._translate = QtCore.QCoreApplication.translate
-        # Cargo los equipos como objetos        
-        self.field_controler = cc.FieldControl()    
-        self.mul = mt.K2010()
-        # Ventana para seleccionar la carpeta de guardado    
-        self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
-        self.path = ''
-        
-        
-    def calibration_check(self,status):
-        '''
-        Check the calibration check box
-        '''
-        if status == QtCore.Qt.Checked:
-            self.calibration = True
-            self.ui.graphWidget.setLabel('bottom', "Campo", units='Gauss')
-        else: 
-            self.calibration = False
-            self.ui.graphWidget.setLabel('bottom', "Voltaje", units='V')
-
-    def from_zero_(self,status):
-        '''
-        Check the from_zero check box. If it is true, the measurement will start from 0 field
-        '''
-        if status == QtCore.Qt.Checked:
-            self.from_zero = True
-        else:
-            self.from_zero = False
-                
-             
-    def end(self):
-        '''
-        End the sequence, restart the list that save the values and prepare the code for the next measurement
-        '''
-        if self.save:
-            self.f.close()
-        self.voltage = []
-        self.resistance = []
-        self.field = []
-        self.worker2.stop()
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Finished"))
-        self.ui.pushButton.setEnabled(True)
-        self.ui.pushButton_2.setEnabled(False)
-        self.running_state = False
-        self.measure = False
-     
-    def user_stop(self):
-        '''
-        Stop the measrument if the stop buttom is pressed. Restart all the variables and turn down the instruments
-        '''
-        if self.save:
-            self.f.close()
-        self.voltage = []
-        self.resistance = []
-        self.field = []
-        
-        self.worker.stop()
-        self.worker2.stop()
-        self.ui.pushButton.setEnabled(True)
-        self.ui.pushButton_2.setEnabled(False)
-        self.running_state = False 
-        self.measure = False
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "User stop / Decreasing field"))
-        
-    def field_ready(self):
-        '''
-        Change the status windows when the field decreased to 0
-        '''
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Field = 0 / Ready"))
-        
-    def max_f(self):
-        '''
-        Change the flag to start the measurement when the field is max (if from_zero is False)
-        '''
-        self.measure = True
-    
-    def update1(self,data):
-        '''
-        Get the voltage value from the working thread 1 and save it in an auxiliary variable 
-        '''
-        if self.param0['calibration']:
-            self.field_aux = data*self.param0['slope']+self.param0['intercept']
-        else:
-            self.voltage_aux = data
-        
-    def update2(self,data):
-        '''
-        Get the results of the last resistance measurement, add the results to the list, and replot with the new results
-        '''
-        # The measurement start from zero if the check box is checked
-        if self.from_zero:
-            self.resistance.append(data)
-            self.ui.lineEdit_10.setText(self._translate("MainWindow", "{}".format(str(self.resistance[-1]))))
-            
-            if self.param0['calibration'] and self.running_state:
-                self.field.append(self.filed_aux)
-                self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(str(self.field[-1]))))
-                self.curve.setData(self.field,self.resistance)
-            elif not self.param0['calibration'] and self.running_state:
-                self.voltage.append(self.voltage_aux)
-                self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(str(self.voltage[-1]))))
-                self.curve.setData(self.voltage,self.resistance)
-            
-            if self.save:
-                if self.param0['calibration'] and self.running_state:
-                    self.f.write('{},{}\n'.format(self.field[-1],self.resistance[-1]))
-                    
-                elif not self.param0['calibration'] and self.running_state:
-                    self.f.write('{},{}\n'.format(self.voltage[-1],self.resistance[-1]))
-                    
-        # Start the measurment after the field reached the max value
-        elif self.measure:
-            self.resistance.append(data)
-            self.ui.lineEdit_10.setText(self._translate("MainWindow", "{}".format(str(self.resistance[-1]))))
-            
-            if self.param0['calibration'] and self.running_state:
-                self.field.append(self.filed_aux)
-                self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(str(self.field[-1]))))
-                self.curve.setData(self.field,self.resistance)
-            elif not self.param0['calibration'] and self.running_state:
-                self.voltage.append(self.voltage_aux)
-                self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(str(self.voltage[-1]))))
-                self.curve.setData(self.voltage,self.resistance)
-            
-            if self.save:
-                if self.param0['calibration'] and self.running_state:
-                    self.f.write('{},{}\n'.format(self.field[-1],self.resistance[-1]))
-                    
-                elif not self.param0['calibration'] and self.running_state:
-                    self.f.write('{},{}\n'.format(self.voltage[-1],self.resistance[-1]))        
-                
-    def save_check(self,status):
-        '''
-        Check if the save buttom is checked
-        '''
-        if status == QtCore.Qt.Checked:
-            self.save = True
-        else: 
-            self.save = False    
- 
-    def open_dialog_box(self):
-        '''
-        Get the path to the directory where the results will be saved
-        '''
-        file = ''
-        file = QFileDialog.getExistingDirectory()
-        self.path = file
-        
-    
-    def start(self):
-        '''
-        Start the measurement thread, disabled the measure buttom  
-        '''
-        
-        self.ui.pushButton.setEnabled(False)
-        self.ui.pushButton_2.setEnabled(True)
-        # Cambio el flag running_state a True y hago reset de las listas que almacenan los resultados
-        self.running_state = True
-        self.voltage_aux = 0
-        self.field_aux = 0
-        self.voltage = []
-        self.resistance = []
-        self.field = []
-        # Diccionario que contiene los parámetros relevantes para la medicion
-        # current_mA = Corriente de medición para el modo delta
-        # samples = Numero de mediciones de resistencia para promediar
-        # cmax y cmin = Valor de voltaje de referencia max y min (respectivamente)
-        # rate = Rate de cambio del campo magnético en volts/seg
-        # calibration = Flag para determinar si hay valores de calibracion
-        # slope y intercept = Parámetros para pasar de voltaje a campo
-        # save = Flag para determinar si es necesario guardar la medicion
-        # name = Nombre del archivo (hay que incluir la extension a mano)
-        # pre_magnetization = Flag para determinar si hay que realizar ciclo de pre-magnetizacion
-        self.param0 = {'calibration': self.calibration,
-                      'slope' : float(self.ui.lineEdit_6.text()),
-                      'intercept' : float(self.ui.lineEdit_7.text()),
-                      'from_zero' : self.from_zero,
-                      'name' : str(self.ui.lineEdit_8.text())
-                      }
-        
-        self.param1 = {'cmax' : float(self.ui.lineEdit_3.text()),
-                      'cmin' : float(self.ui.lineEdit_4.text()),
-                      'rate' : float(self.ui.lineEdit_5.text())
-                     }             
-        
-        self.param2 = {'mode': self.ui.comboBox_2.currentText(),
-                      'samples': int(self.ui.lineEdit_2.text()),    
-                      'sleep_time' : float(self.ui.lineEdit_13.text())
-                     }               
-        
-        # Creo el archivo para guardar la medicion. 
-        if self.save:
-            self.f = open(self.path + '/{}'.format(self.param0['name']),'w')
-            
-            if self.param0['calibration']:
-                self.f.write('Campo(G),Resistencia(Ohm)\n')
-            else:
-                self.f.write('Voltaje(V),Resistencia(Ohm)\n')
-            
-        self.worker = Worker(self.param1,self.field_controler)
-        self.worker.signals.result1.connect(self.update1)
-        self.worker.signals.max_field.connect(self.max_f)
-        self.worker.signals.finished1.connect(self.end)
-        self.worker.signals.zero_field.connect(self.field_ready)
-        self.threadpool.start(self.worker) 
-        self.worker2 = Worker2(self.param2,self.mul)
-        self.worker2.signals.result2.connect(self.update2)
-        self.threadpool.start(self.worker2) 
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Running"))
-            
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    application = mywindow()
-    application.show()
-    sys.exit(app.exec_())
-
+from pyqtgraph import PlotWidget

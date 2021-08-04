@@ -58,6 +58,7 @@ class Worker(QRunnable):
         self.running = True
         self.mul = mt.K2010()
         self.temp = te.Ls331()
+        self.rang = self.check_ragne(self.parameters['range'])
         if parameters['field_on']:
             self.campo = cc.FieldControl()
 
@@ -72,6 +73,29 @@ class Worker(QRunnable):
     
     def stop(self):
         self.running = False         
+
+    def check_ragne(self,rang):
+        if rang == 'Auto':
+            return 'Auto'
+        elif rang == '1GOhm':
+            return 1000000000
+        elif rang == '100MOhm':
+            return 100000000
+        elif rang == '10MOhm':
+            return 10000000
+        elif rang == '1MOhm':
+            return 1000000
+        elif rang == '100kOhm':
+            return 100000
+        elif rang == '10kOhm':
+            return 10000
+        elif rang == '1kOhn':
+            return 1000
+        elif rang == '100Ohm':
+            return 100
+        else:
+            return 'Auto'
+        
     
     @pyqtSlot()
     def run(self):
@@ -85,10 +109,10 @@ class Worker(QRunnable):
         
         self.mul.reset()
         if self.parameters['mode'] == '2_Wires':
-            self.mul.mode_2wire()
+            self.mul.mode_2wire(self.rang)
         elif self.parameters['mode'] == '4_Wires':
-            self.mul.mode_4wire()
-        self.mul.continuous_mode(on=True)    
+            self.mul.mode_4wire(self.rang)
+        # self.mul.continuous_mode(on=True)    
         
         time.sleep(2)
         
@@ -274,6 +298,7 @@ class mywindow(QtWidgets.QMainWindow):
             
             self.param = {'mode': self.ui.comboBox_2.currentText(),
                           'samples': int(self.ui.lineEdit_2.text()),
+                          'range': self.ui.comboBox_3.currentText(),
                           'field_on' : self.field_on,
                           'field' : float(self.ui.lineEdit_6.text()),
                           'temperature' : float(self.ui.lineEdit_7.text()),

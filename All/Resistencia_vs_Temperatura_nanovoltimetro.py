@@ -66,7 +66,7 @@ class Worker(QRunnable):
         # Add the callback to our kwargs
     
     def measure(self):
-        resistance = self.nano.mean_meas(self.parameters['samples'])/(self.parameters['current_mA']/1000.0)
+        resistance = self.nano.mean_meas(self.parameters['samples'])
         temperature_a = self.temp.get_temp()[0]
         temperature_b = self.temp.get_temp()[1]
         heater_output = self.temp.get_heater()
@@ -156,7 +156,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.temp_c = False
         
         self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
-        self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
+        self.ui.graphWidget.setLabel('left', "Voltaje", units='V')
         self.ui.graphWidget.setLabel('bottom', "Temperature_A", units='K')
         
         self.curve2 = self.ui.graphWidget_2.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
@@ -215,11 +215,11 @@ class mywindow(QtWidgets.QMainWindow):
     def plot_temp(self):
         if self.plot_temp_b:
             self.plot_temp_b = False
-            self.ui.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_A"))
+            self.ui.label_11.setText(self._translate("MainWindow", "Voltaje vs Temperature_A"))
             self.ui.graphWidget.setLabel('bottom', "Temperature_A", units='K')
         else:
             self.plot_temp_b = True
-            self.ui.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_B"))
+            self.ui.label_11.setText(self._translate("MainWindow", "Voltaje vs Temperature_B"))
             self.ui.graphWidget.setLabel('bottom', "Temperature_B", units='K')
   
     def update(self,data):
@@ -307,7 +307,7 @@ class mywindow(QtWidgets.QMainWindow):
             
             if self.param['save']:
                 self.f = open(self.path + '/{}'.format(self.param['name']),'w')
-                self.f.write('Time(s),Temperature_a(K),Temperature_b(K),Resistance(Ohm)\n')
+                self.f.write('Time(s),Temperature_a(K),Temperature_b(K),Voltaje(V)\n')
                 
                     
             self.worker = Worker(self.param)

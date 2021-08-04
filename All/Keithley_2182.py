@@ -19,7 +19,7 @@ rm = visa.ResourceManager()
 
 class K2182():
     def __init__(self):
-        self.nv = rm.open_resource('GPIB0::10::INSTR')
+        self.nv = rm.open_resource('GPIB0::7::INSTR')
     
     def idn(self):
         print(self.nv.query('*IDN?'))
@@ -28,8 +28,9 @@ class K2182():
         self.nv.write('*RST')
     
     def mode(self,mode='volt'):
-        self.nv.write('SENS:FUNC VOLT')
-        self.nv.write('SENS:VOLT:RANG:AUTO ON')
+        # self.nv.write('SENS:FUNC VOLT')
+        self.nv.write('SENS:VOLT:RANG 100')
+        # self.nv.write('SENS:VOLT:RANG:AUTO ON')
         self.nv.write('SENS:VOLT:NPLC 5')
         
     def measure(self):

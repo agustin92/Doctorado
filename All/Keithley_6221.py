@@ -43,7 +43,7 @@ class K6221():
                     tiempo_aux = time.time()
             self.cs.write('INIT:IMM')
     
-    def current_mode(self,current,comp = 100):
+    def current_mode(self,current,comp = 105):
         self.cs.write('CURR:RANG {}'.format(str(current)))
         self.cs.write('CURR {}'.format(str(current)))
         self.cs.write('CURRent:COMP {}'.format(str(comp)))
@@ -63,13 +63,14 @@ class K6221():
     def reset(self,rang = 0.1,unit='OHMS'):
         self.cs.write('*RST')
         self.cs.write('UNIT {}'.format(unit))
-        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
+        # self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
+        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG 100\' ")        
 #        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG {}\' ".format(str(rang)))
         self.cs.write("SYST:COMM:SER:SEND \'VOLT:NPLC 5\' ")
         self.cs.write('CURRent:RANGe:AUTO ON')
         self.cs.write('CURRent:COMP 100')
 
-    def resest_soft(self):
+    def reset_soft(self):
         self.cs.write('*RST')
     
     def stop_meas(self):

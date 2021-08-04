@@ -110,12 +110,12 @@ class Worker(QRunnable):
         if self.running:  
             self.signals.finished1.emit()
             self.field.set_voltage_steps(0)
+            self.signals.zero_field.emit()
               # Done
             
         if not self.running:
-            self.signals.zero_field.emit()
             self.field.set_voltage_steps(0)
-            
+            self.signals.zero_field.emit()
             
 class WorkerSignals2(QObject):
     '''
@@ -239,9 +239,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.resistance = []
         self.field = []
         self.worker2.stop()
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Finished"))
-        self.ui.pushButton.setEnabled(True)
-        self.ui.pushButton_2.setEnabled(False)
+        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Finished / Descreasing Field"))
+        # self.ui.pushButton.setEnabled(True)
+        # self.ui.pushButton_2.setEnabled(False)
         self.running_state = False
         self.measure = False
      
@@ -257,8 +257,8 @@ class mywindow(QtWidgets.QMainWindow):
         
         self.worker.stop()
         self.worker2.stop()
-        self.ui.pushButton.setEnabled(True)
-        self.ui.pushButton_2.setEnabled(False)
+        # self.ui.pushButton.setEnabled(True)
+        # self.ui.pushButton_2.setEnabled(False)
         self.running_state = False 
         self.measure = False
         self.ui.lineEdit_9.setText(self._translate("MainWindow", "User stop / Decreasing field"))
@@ -267,6 +267,8 @@ class mywindow(QtWidgets.QMainWindow):
         '''
         Change the status windows when the field decreased to 0
         '''
+        self.ui.pushButton.setEnabled(True)
+        self.ui.pushButton_2.setEnabled(False)        
         self.ui.lineEdit_9.setText(self._translate("MainWindow", "Field = 0 / Ready"))
         
     def max_f(self):

@@ -74,7 +74,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>130</y>
+      <y>150</y>
       <width>141</width>
       <height>17</height>
      </rect>
@@ -94,7 +94,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>170</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -114,7 +114,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
+      <y>190</y>
       <width>171</width>
       <height>21</height>
      </rect>
@@ -408,7 +408,7 @@
       <x>620</x>
       <y>0</y>
       <width>20</width>
-      <height>211</height>
+      <height>221</height>
      </rect>
     </property>
     <property name="orientation">
@@ -419,7 +419,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>200</y>
+      <y>210</y>
       <width>1011</width>
       <height>20</height>
      </rect>
@@ -723,6 +723,81 @@
     <item>
      <property name="text">
       <string>4_Wires</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_21">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Range</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>131</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Auto</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>1GOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>100MOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>10MOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>1MOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>100kOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>10kOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>1kOhm</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>100Ohm</string>
      </property>
     </item>
    </widget>

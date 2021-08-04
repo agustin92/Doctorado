@@ -110,12 +110,13 @@ class Worker(QRunnable):
         if self.running:  
             self.signals.finished1.emit()
             self.field.set_voltage_steps(0)
+            self.signals.zero_field.emit()
               # Done
             
         if not self.running:
-            self.signals.zero_field.emit()
-            self.field.set_voltage_steps(0)
             
+            self.field.set_voltage_steps(0)
+            self.signals.zero_field.emit()
             
 class WorkerSignals2(QObject):
     '''
@@ -145,15 +146,41 @@ class Worker2(QRunnable):
         self.signals = WorkerSignals2()
         self.mul = mul
         self.mul.reset()
+        self.rang = self.check_ragne(self.parameters['range'])
+        
+        
         if self.parameters['mode'] == '2_Wires':
-            self.mul.mode_2wire()
+            self.mul.mode_2wire(rang=self.rang)
         elif self.parameters['mode'] == '4_Wires':
-            self.mul.mode_4wire()
-        self.mul.continuous_mode(on=True) 
+            self.mul.mode_4wire(rang=self.rang)
+        # self.mul.continuous_mode(on=True) 
         self.running_state = False
         time.sleep(1)
      
-    
+    def check_ragne(self,rang):
+        if rang == 'Auto':
+            return 'Auto'
+        elif rang == '1GOhm':
+            return 1000000000
+        elif rang == '100MOhm':
+            return 100000000
+        elif rang == '10MOhm':
+            return 10000000
+        elif rang == '1MOhm':
+            return 1000000
+        elif rang == '100kOhm':
+            return 100000
+        elif rang == '10kOhm':
+            return 10000
+        elif rang == '1kOhn':
+            return 1000
+        elif rang == '100Ohm':
+            return 100
+        else:
+            return 'Auto'
+        
+        
+        
     @pyqtSlot()
     def run(self):
         '''
@@ -251,9 +278,9 @@ class mywindow(QtWidgets.QMainWindow):
         self.resistance = []
         self.field = []
         self.worker2.stop()
-        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Finished"))
-        self.ui.pushButton.setEnabled(True)
-        self.ui.pushButton_2.setEnabled(False)
+        self.ui.lineEdit_9.setText(self._translate("MainWindow", "Finished / Decreasing Field"))
+        # self.ui.pushButton.setEnabled(True)
+        # self.ui.pushButton_2.setEnabled(False)
         self.running_state = False
         self.measure = False
      
@@ -269,8 +296,6 @@ class mywindow(QtWidgets.QMainWindow):
         
         self.worker.stop()
         self.worker2.stop()
-        self.ui.pushButton.setEnabled(True)
-        self.ui.pushButton_2.setEnabled(False)
         self.running_state = False 
         self.measure = False
         self.ui.lineEdit_9.setText(self._translate("MainWindow", "User stop / Decreasing field"))
@@ -279,6 +304,8 @@ class mywindow(QtWidgets.QMainWindow):
         '''
         Change the status windows when the field decreased to 0
         '''
+        self.ui.pushButton.setEnabled(True)
+        self.ui.pushButton_2.setEnabled(False)        
         self.ui.lineEdit_9.setText(self._translate("MainWindow", "Field = 0 / Ready"))
         
     def max_f(self):
@@ -397,6 +424,7 @@ class mywindow(QtWidgets.QMainWindow):
                      }             
         
         self.param2 = {'mode': self.ui.comboBox_2.currentText(),
+                       'range': self.ui.comboBox_3.currentText(),
                       'samples': int(self.ui.lineEdit_2.text()),    
                       'sleep_time' : float(self.ui.lineEdit_13.text())
                      }               
