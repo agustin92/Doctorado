@@ -261,6 +261,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>420</x>
@@ -542,7 +545,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Pre-Magnetization</string>
+     <string>From Zero</string>
     </property>
    </widget>
   </widget>
