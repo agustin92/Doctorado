@@ -63,12 +63,12 @@ class K6221():
     def reset(self,rang = 0.1,unit='OHMS'):
         self.cs.write('*RST')
         self.cs.write('UNIT {}'.format(unit))
-        # self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ")
-        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG 100\' ")        
+        # self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG:AUTO ON\' ") # Rango de voltaje automático, comentar para desactivar
+        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG 0.01\' ")  # Para cambiar el rango de voltaje a mano, 100,10,1,0.1,0.01 V      
 #        self.cs.write("SYST:COMM:SER:SEND \'VOLT:RANG {}\' ".format(str(rang)))
         self.cs.write("SYST:COMM:SER:SEND \'VOLT:NPLC 5\' ")
         self.cs.write('CURRent:RANGe:AUTO ON')
-        self.cs.write('CURRent:COMP 100')
+        self.cs.write('CURRent:COMP 105')
 
     def reset_soft(self):
         self.cs.write('*RST')

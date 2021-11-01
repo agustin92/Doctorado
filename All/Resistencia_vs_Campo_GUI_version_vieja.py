@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Resistencia_vs_Campo_GUI.ui'
+# Form implementation generated from reading ui file '.\Resistencia_vs_Campo_GUI.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -109,7 +109,6 @@ class Ui_MainWindow(object):
         self.checkBox_2.setFont(font)
         self.checkBox_2.setObjectName("checkBox_2")
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setEnabled(False)
         self.pushButton_2.setGeometry(QtCore.QRect(420, 90, 131, 51))
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -248,7 +247,7 @@ class Ui_MainWindow(object):
         self.label_11.setText(_translate("MainWindow", "Voltage"))
         self.label_12.setText(_translate("MainWindow", "Field"))
         self.pushButton_3.setText(_translate("MainWindow", "Browse Directory"))
-        self.checkBox_3.setText(_translate("MainWindow", "From Zero"))
+        self.checkBox_3.setText(_translate("MainWindow", "Pre-Magnetization"))
         self.menuResistencia_vsCampo.setTitle(_translate("MainWindow", "Resistencia vs Campo"))
 
 from pyqtgraph import PlotWidget

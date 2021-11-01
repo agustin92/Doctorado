@@ -109,14 +109,13 @@ class Worker(QRunnable):
         
         self.mul.reset()
         if self.parameters['mode'] == '2_Wires':
-            self.mul.mode_2wire(self.rang)
+            self.mul.mode_2wire(rang = self.rang)
         elif self.parameters['mode'] == '4_Wires':
-            self.mul.mode_4wire(self.rang)
+            self.mul.mode_4wire(rang = self.rang)
         # self.mul.continuous_mode(on=True)    
         
         time.sleep(2)
         
-        time.sleep(1)
         self.temp.change_temp(self.parameters['temperature'],self.parameters['rate'],
                               self.parameters['heater'])
         time.sleep(5)

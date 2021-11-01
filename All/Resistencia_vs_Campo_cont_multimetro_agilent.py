@@ -155,7 +155,7 @@ class Worker2(QRunnable):
             self.mul.mode_4wire(rang=self.rang)
         # self.mul.continuous_mode(on=True) 
         self.running_state = False
-        time.sleep(1)
+        time.sleep(4)
      
     def check_ragne(self,rang):
         if rang == 'Auto':

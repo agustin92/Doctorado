@@ -99,13 +99,13 @@ class Worker(QRunnable):
         
         while self.running and vaux < self.parameters['vmax']:
             self.volt.set_voltage_steps(vaux)
-            time.sleep(5)
+            time.sleep(15)
             self.signals.result.emit([self.measure(),vaux])
             vaux += self.parameters['step']
         
         if self.running:
             self.volt.set_voltage_steps(self.parameters['vmax'])
-            time.sleep(5)
+            time.sleep(15)
             self.signals.result.emit([self.measure(),vaux])
             self.running= False
             

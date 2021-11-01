@@ -113,7 +113,8 @@ class Worker(QRunnable):
             self.mul.mode_2wire(rang =self.rang)
         elif self.parameters['mode'] == '4_Wires':
             self.mul.mode_4wire(rang =self.rang)
-        self.mul.continuous_mode(on=True)    
+        # time.sleep(1)
+        # self.mul.continuous_mode(on=True)    
         
         
         time.sleep(1)
@@ -123,15 +124,15 @@ class Worker(QRunnable):
         
         ti = time.time()
         
-        try:
-            while True and self.running:
-                time_aux = time.time() - ti             
-                self.results_inst[:4] = self.measure()
-                self.results_inst[4] = time_aux
-                result = self.results_inst
-                self.signals.result.emit(result)
-                time.sleep(self.parameters['sleep_time'])
-       
+
+        while self.running:
+            time_aux = time.time() - ti             
+            self.results_inst[:4] = self.measure()
+            self.results_inst[4] = time_aux
+            result = self.results_inst
+            self.signals.result.emit(result)
+            time.sleep(self.parameters['sleep_time'])
+   
 #                self.res.stop_meas()
 #                
 #                
@@ -140,21 +141,17 @@ class Worker(QRunnable):
 #                self.campo.set_voltage_steps(0.0)
 #                time.sleep(5)
 #                print('pare la medicion')
-            
-            if not self.running:
-                self.mul.continuous_mode()
-                # self.temp.set_range()
-                print('pare la medicion')
-                pass    
-            
-        except not self.running:
+        
+        if not self.running:
             self.mul.continuous_mode()
             # self.temp.set_range()
             print('pare la medicion')
-            pass
+            
+        
 
-        finally:
-            self.signals.finished.emit()  # Done
+
+
+        self.signals.finished.emit()  # Done
 
 
 class mywindow(QtWidgets.QMainWindow):
