@@ -13,13 +13,14 @@ from PyQt5.QtCore import *
 import numpy as np
 import time 
 import Controlador_campo as cc
-import Controlador_multimetro_agilent as mt
+import Keithley_6221 as kd
+import Keithley_2182 as kv
 import Controlador_temp as te
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
  
-from Resistencia_multimetro_vs_Temperatura_GUI import Ui_MainWindow
+from Resistencia_vs_Temperatura_GUI import Ui_MainWindow
  
 import sys
  
@@ -56,44 +57,23 @@ class Worker(QRunnable):
         self.signals = WorkerSignals()
         self.results_inst = [0.0,0.0,0.0,0,0.0]
         self.running = True
-        self.mul = mt.K2010()
-        # self.temp = te.Ls331()
-        self.rang = True
-        self.rang = self.check_ragne(self.parameters['range'])
+        self.res = kd.K6221()
+        self.nano = kv.K2182()
+        self.temp = te.Ls331()
+        ti = time.time()
         if parameters['field_on']:
             self.campo = cc.FieldControl()
+            
 
         # Add the callback to our kwargs
-
-    def check_ragne(self,rang):
-        if rang == 'Auto':
-            return 'Auto'
-        elif rang == '1GOhm':
-            return 1000000000
-        elif rang == '100MOhm':
-            return 100000000
-        elif rang == '10MOhm':
-            return 10000000
-        elif rang == '1MOhm':
-            return 1000000
-        elif rang == '100kOhm':
-            return 100000
-        elif rang == '10kOhm':
-            return 10000
-        elif rang == '1kOhn':
-            return 1000
-        elif rang == '100Ohm':
-            return 100
-        else:
-            return 'Auto'
-        
     
     def measure(self):
-        resistance = self.mul.mean_meas(self.parameters['samples'])
-        temperature_a = 0
-        temperature_b = 0
-        heater_output = 0
-        return temperature_a, temperature_b, resistance, heater_output
+        
+        resistance = self.nano.mean_meas(self.parameters['samples'])
+        # temperature_a = self.temp.get_temp()[0]
+        # temperature_b = self.temp.get_temp()[1]
+        # heater_output = self.temp.get_heater()
+        return 0, 0, resistance, 0
     
     def stop(self):
         self.running = False         
@@ -108,31 +88,29 @@ class Worker(QRunnable):
         results_inst[3] = Time
         '''
         
-        self.mul.reset()
-        if self.parameters['mode'] == '2_Wires':
-            self.mul.mode_2wire(rang =self.rang)
-        elif self.parameters['mode'] == '4_Wires':
-            self.mul.mode_4wire(rang =self.rang)
-        # time.sleep(1)
-        # self.mul.continuous_mode(on=True)    
-        
-        
-        time.sleep(1)
+        self.res.reset_soft()
+        self.nano.reset()
+        time.sleep(2)
+        self.res.current_mode(self.parameters['current_mA']/1000.0)
+        self.nano.mode()
+        time.sleep(2)
+        self.res.output(on=True)
+        self.nano.output(on=True)
         # self.temp.change_temp(self.parameters['temperature'],self.parameters['rate'],
                               # self.parameters['heater'])
-        time.sleep(1)
+        time.sleep(3)
         
         ti = time.time()
         
-
-        while self.running:
-            time_aux = time.time() - ti             
-            self.results_inst[:4] = self.measure()
-            self.results_inst[4] = time_aux
-            result = self.results_inst
-            self.signals.result.emit(result)
-            time.sleep(self.parameters['sleep_time'])
-   
+        try:
+            while True and self.running:
+                time_aux = time.time() - ti             
+                self.results_inst[:4] = self.measure()
+                self.results_inst[4] = time_aux
+                result = self.results_inst
+                self.signals.result.emit(result)
+                time.sleep(self.parameters['sleep_time'])
+       
 #                self.res.stop_meas()
 #                
 #                
@@ -141,17 +119,25 @@ class Worker(QRunnable):
 #                self.campo.set_voltage_steps(0.0)
 #                time.sleep(5)
 #                print('pare la medicion')
-        
-        if not self.running:
-            self.mul.continuous_mode()
-            # self.temp.set_range()
-            print('pare la medicion')
             
-        
+            if not self.running:
+                self.res.output()
+                self.nano.output()
+                # if not self.parameters['temp_check']:
+                #     self.temp.set_range()
+                print('pare la medicion')
+                pass    
+            
+        except not self.running:
+            self.res.output()
+            self.nano.output()
+            # if not self.parameters['temp_check']:
+            #     self.temp.set_range()
+            print('pare la medicion')
+            pass
 
-
-
-        self.signals.finished.emit()  # Done
+        finally:
+            self.signals.finished.emit()  # Done
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -169,9 +155,12 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.checkBox_2.stateChanged.connect(self.save_check)
         self.save = False
         
+        self.ui.checkBox_3.stateChanged.connect(self.temp_check)
+        self.temp_c = False
+        
         self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
-        self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
-        self.ui.graphWidget.setLabel('bottom', "Time", units='seg')
+        self.ui.graphWidget.setLabel('left', "Voltaje", units='V')
+        self.ui.graphWidget.setLabel('bottom', "Time", units='min')
         
         self.curve2 = self.ui.graphWidget_2.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
         self.ui.graphWidget_2.setLabel('left', "Temperature_A", units='K')
@@ -218,29 +207,37 @@ class mywindow(QtWidgets.QMainWindow):
             self.save = True
         else: 
             self.save = False
+
+    def temp_check(self,status):
+        
+        if status == QtCore.Qt.Checked:
+            self.temp_c = True
+        else: 
+            self.temp_c = False
             
     def plot_temp(self):
         if self.plot_temp_b:
             self.plot_temp_b = False
-            self.ui.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_A"))
-            self.ui.graphWidget.setLabel('bottom', "Time", units='seg')
+            self.ui.label_11.setText(self._translate("MainWindow", "Voltaje vs Tiempo"))
+            self.ui.graphWidget.setLabel('bottom', "Tiempo", units='seg')
         else:
             self.plot_temp_b = True
-            self.ui.label_11.setText(self._translate("MainWindow", "Resistance vs Temperature_B"))
-            self.ui.graphWidget.setLabel('bottom', "Time", units='min')
+            self.ui.label_11.setText(self._translate("MainWindow", "Voltaje vs Tiempo"))
+            self.ui.graphWidget.setLabel('bottom', "Tiempo", units='min')
   
     def update(self,data):
         self.temperature_a.append(data[0])
         self.temperature_b.append(data[1])
         self.resistance.append(data[2])
         self.time.append(data[4])
+        self.time_min.append(data[4]/60)
         
         self.ui.lineEdit_11.setText(self._translate("MainWindow", "{}".format(str(self.resistance[-1]))))
         self.ui.lineEdit_12.setText(self._translate("MainWindow", "{}".format(str(self.temperature_a[-1]))))
         self.ui.lineEdit_13.setText(self._translate("MainWindow", "{}".format(str(self.temperature_b[-1]))))
         
         if self.plot_temp_b:
-            self.curve.setData(self.time,self.resistance)
+            self.curve.setData(self.time_min,self.resistance)
         else:
             self.curve.setData(self.time,self.resistance)
             
@@ -262,7 +259,7 @@ class mywindow(QtWidgets.QMainWindow):
             self.heater = 2
         elif self.ui.comboBox.currentText() == 'High':
             self.heater = 3
-    
+            
         
     def stop(self):
         self.worker.stop()
@@ -291,11 +288,11 @@ class mywindow(QtWidgets.QMainWindow):
             self.temperature_b = []
             self.resistance = []
             self.time = []
+            self.time_min = []
             
             self.heater_state()
             
-            self.param = {'mode': self.ui.comboBox_2.currentText(),
-                          'range': self.ui.comboBox_3.currentText(),
+            self.param = {'current_mA': float(self.ui.lineEdit.text()),
                           'samples': int(self.ui.lineEdit_2.text()),
                           'field_on' : self.field_on,
                           'field' : float(self.ui.lineEdit_6.text()),
@@ -304,7 +301,8 @@ class mywindow(QtWidgets.QMainWindow):
                           'heater' : self.heater,
                           'sleep_time' : float(self.ui.lineEdit_9.text()),
                           'save' : self.save,
-                          'name' : str(self.ui.lineEdit_10.text())
+                          'name' : str(self.ui.lineEdit_10.text()),
+                          'temp_check' : self.temp_c
                          }        
             
     
@@ -315,7 +313,7 @@ class mywindow(QtWidgets.QMainWindow):
             
             if self.param['save']:
                 self.f = open(self.path + '/{}'.format(self.param['name']),'w')
-                self.f.write('Time(s),Temperature_a(K),Temperature_b(K),Resistance(Ohm)\n')
+                self.f.write('Time(s),Temperature_a(K),Temperature_b(K),Voltaje(V)\n')
                 self.f.close()
                     
             self.worker = Worker(self.param)

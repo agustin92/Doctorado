@@ -20,16 +20,18 @@ rm = visa.ResourceManager()
 class K2182():
     def __init__(self):
         self.nv = rm.open_resource('GPIB0::7::INSTR')
+
     
     def idn(self):
         print(self.nv.query('*IDN?'))
     
     def reset(self):
         self.nv.write('*RST')
+        self.nv.write('INIT:CONT ON')
     
     def mode(self,mode='volt'):
         # self.nv.write('SENS:FUNC VOLT')
-        self.nv.write('SENS:VOLT:RANG 100')
+        self.nv.write('SENS:VOLT:RANG 1')  # Para cambiar el rango de voltaje a mano, 100,10,1,0.1,0.01 V 
         # self.nv.write('SENS:VOLT:RANG:AUTO ON')
         self.nv.write('SENS:VOLT:NPLC 5')
         
@@ -40,16 +42,15 @@ class K2182():
         raux=[]
         for i in range(samples):
             raux.append(self.measure())
-            time.sleep(0.1)
+            time.sleep(0.15)
         return np.mean(np.array(raux))
     
 
     def output(self,on = False):
-        if on:
-            self.nv.write('INIT:CONT ON')
-        else:
-            self.nv.write('INIT:CONT OFF')
-
-    
+        pass
+        # if on:
+        #     self.nv.write('INIT:CONT ON')
+        # else:
+        #     self.nv.write('INIT:CONT OFF')
 
     

@@ -15,6 +15,7 @@ import time
 
 import Controlador_campo as cc
 import Keithley_6221 as mt
+import Keithley_2182 as nv
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -138,14 +139,21 @@ class Worker2(QRunnable):
     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
     '''
 
-    def __init__(self, parameters, mul):
+    def __init__(self, parameters, mul, nano):
         super(Worker2, self).__init__()
         # Store constructor arguments (re-used for processing)
         self.parameters = parameters
         self.signals = WorkerSignals2()
         self.mul = mul
-        self.mul.reset()
-        self.mul.delta_mode(self.parameters['current_mA'])
+        self.nano = nano
+        self.mul.reset_soft()
+        self.nano.reset()
+        time.sleep(1)
+        self.mul.current_mode(self.parameters['current_mA'])
+        self.nano.mode()
+        time.sleep(1)
+        self.mul.output(on=True)
+        self.nano.output(on=True)
         self.running_state = False
      
     
@@ -157,10 +165,11 @@ class Worker2(QRunnable):
         self.running_state = True
         
         while self.running_state:
-            self.signals.result2.emit(self.mul.mean_meas(self.parameters['samples']))
+            self.signals.result2.emit(self.nano.mean_meas(self.parameters['samples'])/(float(self.parameters['current_mA'])*1000))
             time.sleep(self.parameters['sleep_time'])
             
-        self.mul.stop_meas()
+        self.mul.output()
+        self.nano.output()
             
     def stop(self):
         '''
@@ -203,6 +212,7 @@ class mywindow(QtWidgets.QMainWindow):
         # Cargo los equipos como objetos        
         self.field_controler = cc.FieldControl()    
         self.mul = mt.K6221()
+        self.nano = nv.K2182()
         # Ventana para seleccionar la carpeta de guardado    
         self.ui.pushButton_3.clicked.connect(self.open_dialog_box)
         self.path = ''
@@ -309,12 +319,10 @@ class mywindow(QtWidgets.QMainWindow):
                     self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.field[-1],self.resistance[-1]))
                     self.f.close()
-                    
                 elif not self.param0['calibration'] and self.running_state:
                     self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.voltage[-1],self.resistance[-1]))
                     self.f.close()
-                    
         # Start the measurment after the field reached the max value
         elif self.measure:
             self.resistance.append(data)
@@ -334,7 +342,6 @@ class mywindow(QtWidgets.QMainWindow):
                     self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.field[-1],self.resistance[-1]))
                     self.f.close()
-                    
                 elif not self.param0['calibration'] and self.running_state:
                     self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.voltage[-1],self.resistance[-1]))        
@@ -415,7 +422,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.worker.signals.finished1.connect(self.end)
         self.worker.signals.zero_field.connect(self.field_ready)
         self.threadpool.start(self.worker) 
-        self.worker2 = Worker2(self.param2,self.mul)
+        self.worker2 = Worker2(self.param2,self.mul,self.nano)
         self.worker2.signals.result2.connect(self.update2)
         self.threadpool.start(self.worker2) 
         self.ui.lineEdit_9.setText(self._translate("MainWindow", "Running"))

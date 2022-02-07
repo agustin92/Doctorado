@@ -17,6 +17,7 @@ import numpy as np
 import time 
 import Controlador_campo as cc
 import Keithley_6221 as kd
+import Keithley_2182 as nv
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
@@ -63,6 +64,7 @@ class Worker(QRunnable):
         self.results_inst = [0.0,0.0,0.0]
         self.running = True
         self.res = kd.K6221()
+        self.nano = nv.K2182()
         self.field = cc.FieldControl()
 
         # 
@@ -71,7 +73,7 @@ class Worker(QRunnable):
         '''
         Mido la resistencia varias veces y promedio el resultado.
         '''
-        resistance = self.res.mean_meas(self.parameters['samples'])
+        resistance = self.nano.mean_meas(self.parameters['samples'])/float(self.parameters['current_mA']/1000)
         return resistance
     
     def stop(self):
@@ -87,13 +89,17 @@ class Worker(QRunnable):
         results_inst[1] = Resistencia
         
         Antes de medir hace un reset del equipo (ver controlador Keithley_6221)
-        y arma el modo delta
+        
         '''
         
-        self.res.reset()
+        self.res.reset_soft()
+        self.nano.reset()
         time.sleep(2)
-        self.res.delta_mode(self.parameters['current_mA']/1000.0)
-        time.sleep(1)
+        self.res.current_mode(self.parameters['current_mA']/1000)
+        self.nano.mode()
+        time.sleep(2)
+        self.res.output(on=True)
+        self.nano.output(on=True)
         
         
         cmax = self.parameters['cmax']
@@ -154,13 +160,15 @@ class Worker(QRunnable):
          
         if self.running:  
             self.signals.finished.emit()
-            self.res.stop_meas()
+            self.res.output()
+            self.nano.output()
             self.field.set_voltage_steps(0)
             self.signals.zero_field.emit()
               # Done
             
         if not self.running:
-            self.res.stop_meas()
+            self.res.output()
+            self.nano.output()
             self.field.set_voltage_steps(0)        
             self.signals.zero_field.emit()
 
@@ -272,8 +280,9 @@ class mywindow(QtWidgets.QMainWindow):
                 self.curve.setData(self.voltage,self.resistance)
                 if self.save and self.running_state:
                     self.f = open(self.path + '/{}'.format(self.param['name']),'a+')
-                    self.f.write('{},{}\n'.format(data[0],data[1]))            
+                    self.f.write('{},{}\n'.format(data[0],data[1]))    
                     self.f.close()
+
         elif self.measure:
             self.resistance.append(data[1])
             self.voltage.append(data[0])
@@ -295,7 +304,7 @@ class mywindow(QtWidgets.QMainWindow):
                 self.curve.setData(self.voltage,self.resistance)
                 if self.save and self.running_state:
                     self.f = open(self.path + '/{}'.format(self.param['name']),'a+')
-                    self.f.write('{},{}\n'.format(data[0],data[1]))
+                    self.f.write('{},{}\n'.format(data[0],data[1]))   
                     self.f.close()
         
     def user_stop(self):
@@ -370,7 +379,6 @@ class mywindow(QtWidgets.QMainWindow):
                 self.f.write('Campo(G),Resistencia(Ohm)\n')
             else:
                 self.f.write('Voltaje(V),Resistencia(Ohm)\n')
-                
             self.f.close()
         # Llamo al Thread Worker        
         self.worker = Worker(self.param)

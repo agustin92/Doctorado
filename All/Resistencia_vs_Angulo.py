@@ -187,8 +187,8 @@ class mywindow(QtWidgets.QMainWindow):
         '''
         End the sequence, restart the list that save the values and prepare de code for the next measurement
         '''
-        if self.save:
-            self.f.close()
+        # if self.save:
+        #     self.f.close()
         self.resistance = []
         self.angle = []
         self.first = True
@@ -208,8 +208,11 @@ class mywindow(QtWidgets.QMainWindow):
         self.curve.setData(self.angle,self.resistance)
         
         if self.save:
+            self.f = open(self.path + '/{}'.format(self.ui.lineEdit_8.text()),'a+')
             self.f.write('{},{},{}\n'.format(self.angle[-1],self.resistance[-1],self.ui.lineEdit_3.text()))
-    
+            self.f.close()
+            
+            
     def save_check(self,status):
         '''
         Check if the save buttom is checked
@@ -251,6 +254,7 @@ class mywindow(QtWidgets.QMainWindow):
             if self.save:
                 self.f = open(self.path + '/{}'.format(self.ui.lineEdit_8.text()),'w')
                 self.f.write('Angle (deg),Resistance (Ohm), Voltage (V)\n')
+                self.f.close()
         else:
             self.param['status'] = False
             

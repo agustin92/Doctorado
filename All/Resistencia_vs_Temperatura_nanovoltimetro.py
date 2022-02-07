@@ -241,9 +241,10 @@ class mywindow(QtWidgets.QMainWindow):
         self.curve3.setData(self.time,self.temperature_b)
         self.ui.progressBar.setValue(data[3])
         if self.param['save'] and self.running_state:
+            self.f = open(self.path + '/{}'.format(self.param['name']),'a+')
             self.f.write('{},{},{},{}\n'.format(self.time[-1],self.temperature_a[-1],
                                                 self.temperature_b[-1],self.resistance[-1]))
-
+            self.f.close()
 
     def heater_state(self):
         if self.ui.comboBox.currentText() == 'Off':
@@ -259,15 +260,15 @@ class mywindow(QtWidgets.QMainWindow):
     def stop(self):
         self.worker.stop()
         print('Pare el thread')
-        if self.param['save']:
-            self.f.close()
+        # if self.param['save']:
+        #     self.f.close()
         self.ui.lineEdit_14.setText(self._translate("MainWindow", "User stop"))
         
         self.running_state = False
         
     def end(self):
-        if self.param['save']:
-            self.f.close()
+        # if self.param['save']:
+        #     self.f.close()
         self.ui.lineEdit_14.setText(self._translate("MainWindow", "Finished"))
         print('Medicion finalizada')
         self.running_state = False
@@ -308,7 +309,7 @@ class mywindow(QtWidgets.QMainWindow):
             if self.param['save']:
                 self.f = open(self.path + '/{}'.format(self.param['name']),'w')
                 self.f.write('Time(s),Temperature_a(K),Temperature_b(K),Voltaje(V)\n')
-                
+                self.f.close()
                     
             self.worker = Worker(self.param)
             self.worker.signals.result.connect(self.update)

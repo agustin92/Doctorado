@@ -272,8 +272,8 @@ class mywindow(QtWidgets.QMainWindow):
         '''
         End the sequence, restart the list that save the values and prepare the code for the next measurement
         '''
-        if self.save:
-            self.f.close()
+        # if self.save:
+        #     self.f.close()
         self.voltage = []
         self.resistance = []
         self.field = []
@@ -288,8 +288,8 @@ class mywindow(QtWidgets.QMainWindow):
         '''
         Stop the measrument if the stop buttom is pressed. Restart all the variables and turn down the instruments
         '''
-        if self.save:
-            self.f.close()
+        # if self.save:
+        #     self.f.close()
         self.voltage = []
         self.resistance = []
         self.field = []
@@ -343,11 +343,14 @@ class mywindow(QtWidgets.QMainWindow):
             
             if self.save:
                 if self.param0['calibration'] and self.running_state:
+                    self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.field[-1],self.resistance[-1]))
+                    self.f.close()
                     
                 elif not self.param0['calibration'] and self.running_state:
+                    self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.voltage[-1],self.resistance[-1]))
-                    
+                    self.f.close()
         # Start the measurment after the field reached the max value
         elif self.measure:
             self.resistance.append(data)
@@ -364,11 +367,15 @@ class mywindow(QtWidgets.QMainWindow):
             
             if self.save:
                 if self.param0['calibration'] and self.running_state:
+                    self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.field[-1],self.resistance[-1]))
+                    self.f.close()
                     
                 elif not self.param0['calibration'] and self.running_state:
+                    self.f = open(self.path + '/{}'.format(self.param0['name']),'a+')
                     self.f.write('{},{}\n'.format(self.voltage[-1],self.resistance[-1]))        
-                
+                    self.f.close()
+                    
     def save_check(self,status):
         '''
         Check if the save buttom is checked
@@ -437,6 +444,7 @@ class mywindow(QtWidgets.QMainWindow):
                 self.f.write('Campo(G),Resistencia(Ohm)\n')
             else:
                 self.f.write('Voltaje(V),Resistencia(Ohm)\n')
+            self.f.close()
             
         self.worker = Worker(self.param1,self.field_controler)
         self.worker.signals.result1.connect(self.update1)

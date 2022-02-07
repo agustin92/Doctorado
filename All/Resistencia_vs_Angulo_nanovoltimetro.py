@@ -14,12 +14,13 @@ import time
 
 
 import Controlador_campo as cc
-import Controlador_multimetro as mt
+import Keithley_6221 as kd
+import Keithley_2182 as kv
 
 import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
  
-from Resistencia_multimetro_vs_Angulo_GUI import Ui_MainWindow
+from Resistencia_vs_Angulo_GUI import Ui_MainWindow
  
 import sys
 
@@ -93,27 +94,41 @@ class Worker2(QRunnable):
     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
     '''
 
-    def __init__(self, parameters, mul):
+    def __init__(self, parameters, res, nano):
         super(Worker2, self).__init__()
         # Store constructor arguments (re-used for processing)
         self.parameters = parameters
         self.signals = WorkerSignals2()
-        self.mul = mul
+        self.res = res
+        self.nano = nano
         if self.parameters['status']:
-            self.mul.reset()
-            if self.parameters['mode'] == '2_Wires':
-                self.mul.mode_2wire()
-            else:
-                self.mul.mode_4wire()    
-        self.mul.continuous_mode(on=True)      
+            self.res.reset_soft()
+            self.nano.reset()
+            time.sleep(1)
+            self.res.current_mode(self.parameters['current_mA'])
+            self.nano.mode()
+            time.sleep(2)
+            self.res.output(on=True)
+            self.nano.output(on=True)
+            time.sleep(2)
+        else:
+            self.res.current_mode(self.parameters['current_mA'])
+            self.nano.mode()
+            time.sleep(2)
+            self.res.output(on=True)
+            self.nano.output(on=True)
+            time.sleep(2)
+        # Add the callback to our kwargs
+    
     
     @pyqtSlot()
     def run(self):
         '''
 
         '''
-        self.signals.result2.emit(self.mul.mean_meas(self.parameters['samples']))
-        self.mul.continuous_mode()
+        self.signals.result2.emit(self.nano.mean_meas(self.parameters['samples']))
+        self.res.output()
+        self.nano.output()
         self.signals.finished2.emit()  # Done
 
 
@@ -142,11 +157,12 @@ class mywindow(QtWidgets.QMainWindow):
         self._translate = QtCore.QCoreApplication.translate
         
         self.curve = self.ui.graphWidget.plot(pen=(200,200,200), symbolBrush=(255,0,0), symbolPen='w')
-        self.ui.graphWidget.setLabel('left', "Resistencia", units='Ohm')
+        self.ui.graphWidget.setLabel('left', "Voltage", units='V')
         self.ui.graphWidget.setLabel('bottom', "Angulo", units='degree')        
                 
         self.field_controler = cc.FieldControl()    
-        self.mul = mt.K2010()
+        self.res = kd.K6221()
+        self.nano = kv.K2182()
         self.first = True
         
         self.ui.checkBox_2.stateChanged.connect(self.save_check)
@@ -211,7 +227,7 @@ class mywindow(QtWidgets.QMainWindow):
             self.f = open(self.path + '/{}'.format(self.ui.lineEdit_8.text()),'a+')
             self.f.write('{},{},{}\n'.format(self.angle[-1],self.resistance[-1],self.ui.lineEdit_3.text()))
             self.f.close()
-    
+            
     def save_check(self,status):
         '''
         Check if the save buttom is checked
@@ -241,7 +257,7 @@ class mywindow(QtWidgets.QMainWindow):
         '''
         
         self.ui.pushButton_5.setEnabled(False)
-        self.param = {'mode' : self.ui.comboBox_2.currentText(),
+        self.param = {'current_mA' : float(self.ui.lineEdit_13.text())/1000,
                       'samples': int(self.ui.lineEdit_2.text()),
                       'res' : self.res
                      }                
@@ -252,13 +268,13 @@ class mywindow(QtWidgets.QMainWindow):
             
             if self.save:
                 self.f = open(self.path + '/{}'.format(self.ui.lineEdit_8.text()),'w')
-                self.f.write('Angle (deg),Resistance (Ohm), Voltage (V)\n')
+                self.f.write('Angle (deg),Voltage_sample (V), Voltage (V)\n')
                 self.f.close()
         else:
             self.param['status'] = False
             
             
-        self.worker2 = Worker2(self.param,self.mul)
+        self.worker2 = Worker2(self.param,self.res,self.nano)
         self.worker2.signals.result2.connect(self.update)
         self.worker2.signals.finished2.connect(self.end_mes)
         self.threadpool.start(self.worker2) 
