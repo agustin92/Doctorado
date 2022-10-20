@@ -2,6 +2,8 @@
 
 Repository with custom software to automatise control of intruments and adquisition of data. Each insturment has its own API.
 
+The most recent and stable version of the programs are contianed in the folder ALL
+
 Each masurements program has its own GUI that allows the user to: 
 
   > Control the measurement process 
