@@ -5,7 +5,9 @@ Repository with custom software to automatise control of intruments and adquisit
 Each masurements program has its own GUI that allows the user to: 
 
   > Control the measurement process 
+  
   > Define parameters
+  
   > Visualize data
 
 ### Instruments APIs
